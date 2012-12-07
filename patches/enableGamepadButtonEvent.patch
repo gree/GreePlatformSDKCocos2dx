@@ -1,0 +1,247 @@
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxGLSurfaceView.java cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxGLSurfaceView.java
+--- cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxGLSurfaceView.java	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxGLSurfaceView.java	2012-11-15 15:40:05.466427302 +0900
+@@ -281,6 +281,13 @@
+ 		switch (pKeyCode) {
+ 			case KeyEvent.KEYCODE_BACK:
+ 			case KeyEvent.KEYCODE_MENU:
++			case KeyEvent.KEYCODE_BUTTON_A:
++			case KeyEvent.KEYCODE_DPAD_CENTER:
++			case KeyEvent.KEYCODE_DPAD_DOWN:
++			case KeyEvent.KEYCODE_DPAD_LEFT:
++			case KeyEvent.KEYCODE_DPAD_RIGHT:
++			case KeyEvent.KEYCODE_DPAD_UP:
++
+ 				this.queueEvent(new Runnable() {
+ 					@Override
+ 					public void run() {
+@@ -293,6 +300,30 @@
+ 		}
+ 	}
+ 
++	@Override
++	public boolean onKeyUp(final int pKeyCode, final KeyEvent pKeyEvent) {
++		switch (pKeyCode) {
++			case KeyEvent.KEYCODE_BACK:
++			case KeyEvent.KEYCODE_MENU:
++			case KeyEvent.KEYCODE_BUTTON_A:
++			case KeyEvent.KEYCODE_DPAD_CENTER:
++			case KeyEvent.KEYCODE_DPAD_DOWN:
++			case KeyEvent.KEYCODE_DPAD_LEFT:
++			case KeyEvent.KEYCODE_DPAD_RIGHT:
++			case KeyEvent.KEYCODE_DPAD_UP:
++
++				this.queueEvent(new Runnable() {
++					@Override
++					public void run() {
++						Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyUp(pKeyCode);
++					}
++				});
++				return true;
++			default:
++				return super.onKeyUp(pKeyCode, pKeyEvent);
++		}
++	}
++
+ 	// ===========================================================
+ 	// Methods
+ 	// ===========================================================
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxRenderer.java cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxRenderer.java
+--- cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxRenderer.java	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxRenderer.java	2012-11-15 15:36:14.709533550 +0900
+@@ -107,6 +107,7 @@
+ 	private static native void nativeTouchesMove(final int[] pIDs, final float[] pXs, final float[] pYs);
+ 	private static native void nativeTouchesCancel(final int[] pIDs, final float[] pXs, final float[] pYs);
+ 	private static native boolean nativeKeyDown(final int pKeyCode);
++	private static native boolean nativeKeyUp(final int pKeyCode);
+ 	private static native void nativeRender();
+ 	private static native void nativeInit(final int pWidth, final int pHeight);
+ 	private static native void nativeOnPause();
+@@ -131,6 +132,9 @@
+ 	public void handleKeyDown(final int pKeyCode) {
+ 		Cocos2dxRenderer.nativeKeyDown(pKeyCode);
+ 	}
++	public void handleKeyUp(final int pKeyCode) {
++		Cocos2dxRenderer.nativeKeyUp(pKeyCode);
++	}
+ 
+ 	public void handleOnPause() {
+ 		Cocos2dxRenderer.nativeOnPause();
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/jni/TouchesJni.cpp cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/jni/TouchesJni.cpp
+--- cocos2d-2.0-x-2.0.4/cocos2dx/platform/android/jni/TouchesJni.cpp	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/platform/android/jni/TouchesJni.cpp	2012-11-15 15:51:46.033140604 +0900
+@@ -70,6 +70,12 @@
+ 
+     #define KEYCODE_BACK 0x04
+     #define KEYCODE_MENU 0x52
++	#define KEYCODE_A    0x1d
++	#define KEYCODE_UP   0x13
++	#define KEYCODE_DOWN 0x14
++	#define KEYCODE_LEFT 0x15
++	#define KEYCODE_RIGHT 0x16
++	#define KEYCODE_CENTER 0x17
+ 
+     jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyDown(JNIEnv * env, jobject thiz, jint keyCode) {
+         CCDirector* pDirector = CCDirector::sharedDirector();
+@@ -82,9 +88,78 @@
+                 if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeMenuClicked))
+                     return JNI_TRUE;
+                 break;
++            case KEYCODE_UP:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeUpClicked))
++                return JNI_TRUE;
++                break;
++            case KEYCODE_DOWN:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeDownClicked))
++                    return JNI_TRUE;
++                break;
++
++            case KEYCODE_LEFT:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeLeftClicked))
++                    return JNI_TRUE;
++                break;
++
++           case KEYCODE_RIGHT:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeRightClicked))
++                    return JNI_TRUE;
++                break;
++
++           case KEYCODE_A:
++				if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeAClicked))
++					return JNI_TRUE;
++				break;
++
+             default:
+                 return JNI_FALSE;
+         }
+         return JNI_FALSE;
+     }
++
++    jboolean Java_org_cocos2dx_lib_Cocos2dxRenderer_nativeKeyUp(JNIEnv * env, jobject thiz, jint keyCode) {
++        CCDirector* pDirector = CCDirector::sharedDirector();
++        switch (keyCode) {
++            case KEYCODE_BACK:
++                  if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeBackReleased))
++                    return JNI_TRUE;
++                break;
++            case KEYCODE_MENU:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeMenuReleased))
++                    return JNI_TRUE;
++                break;
++
++			case KEYCODE_UP:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeUpReleased))
++                    return JNI_TRUE;
++                break;
++
++			case KEYCODE_DOWN:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeDownReleased))
++                    return JNI_TRUE;
++                break;
++
++			case KEYCODE_LEFT:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeLeftReleased))
++                    return JNI_TRUE;
++                break;
++
++			case KEYCODE_RIGHT:
++                if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeRightReleased))
++                    return JNI_TRUE;
++                break;
++
++			case KEYCODE_A:
++				if (pDirector->getKeypadDispatcher()->dispatchKeypadMSG(kTypeAReleased))
++					return JNI_TRUE;
++				break;
++
++            default:
++                return JNI_FALSE;
++        }
++        return JNI_FALSE;
++    }
++
++
+ }
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDelegate.h cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDelegate.h
+--- cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDelegate.h	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDelegate.h	2012-11-15 15:47:30.732151835 +0900
+@@ -43,6 +43,17 @@
+ 
+     // The menu key clicked. only available on wophone & android
+     virtual void keyMenuClicked() {};
++
++    virtual void keyAClicked() {};
++    virtual void keyUpClicked() {};
++    virtual void keyDownClicked() {};
++    virtual void keyLeftClicked() {};
++    virtual void keyRightClicked() {};
++    virtual void keyAReleased() {};
++    virtual void keyUpReleased() {};
++    virtual void keyDownReleased() {};
++    virtual void keyLeftReleased() {};
++    virtual void keyRightReleased() {};
+ };
+ 
+ /**
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.cpp cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.cpp
+--- cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.cpp	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.cpp	2012-11-15 15:49:39.596650924 +0900
+@@ -143,6 +143,36 @@
+             case kTypeMenuClicked:
+                 pDelegate->keyMenuClicked();
+                 break;
++            case kTypeAClicked:
++                pDelegate->keyAClicked();
++                break;
++            case kTypeUpClicked:
++                pDelegate->keyUpClicked();
++                break;
++            case kTypeDownClicked:
++                pDelegate->keyDownClicked();
++                break;
++            case kTypeLeftClicked:
++                pDelegate->keyLeftClicked();
++                break;
++            case kTypeRightClicked:
++                pDelegate->keyRightClicked();
++                break;
++            case kTypeAReleased:
++                pDelegate->keyAReleased();
++                break;
++            case kTypeUpReleased:
++                pDelegate->keyUpReleased();
++                break;
++            case kTypeDownReleased:
++                pDelegate->keyDownReleased();
++                break;
++            case kTypeLeftReleased:
++                pDelegate->keyLeftReleased();
++                break;
++            case kTypeRightReleased:
++                pDelegate->keyRightReleased();
++                break;
+             default:
+                 break;
+             }
+diff -uNr cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.h cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.h
+--- cocos2d-2.0-x-2.0.4/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.h	2012-11-02 17:16:12.000000000 +0900
++++ cocos2d-2.0-x-2.0.4.new/cocos2dx/keypad_dispatcher/CCKeypadDispatcher.h	2012-11-15 15:50:14.540786260 +0900
+@@ -39,6 +39,18 @@
+     // the back key clicked msg
+     kTypeBackClicked = 1,
+     kTypeMenuClicked,
++    kTypeAClicked,
++    kTypeUpClicked,
++    kTypeDownClicked,
++    kTypeLeftClicked,
++    kTypeRightClicked,
++    kTypeBackReleased,
++    kTypeMenuReleased,
++    kTypeAReleased,
++    kTypeUpReleased,
++    kTypeDownReleased,
++    kTypeLeftReleased,
++    kTypeRightReleased,
+ } ccKeypadMSGType;
+ 
+ struct _ccCArray;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<properties>
+    <applicationId>xxxxx</applicationId>
+    <consumerKey>xxxxxxxxx</consumerKey>
+    <consumerSecret>xxxxxxxxxxxxxxxxxxxxxxxxxxx</consumerSecret>
+    <developmentMode>sandbox</developmentMode>
+</properties>
