@@ -5,6 +5,7 @@
 #include "CCDirector.h"
 
 #include "CCGreePayment.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
@@ -152,7 +153,7 @@ static bool getEnv(JNIEnv **env){
 		return ret;
 	}
 
-	std::string getDescription(jobject obj){
+	std::string getDescriptionJni(jobject obj){
 		JniMethodInfo t;
 		std::string ret;
 		if(GreeJniHelper::getInstanceMethodInfo(t, obj, "getDescription", "()Ljava/lang/String;")){
@@ -185,7 +186,7 @@ static bool getEnv(JNIEnv **env){
 				CCObject *it;
 				CCARRAY_FOREACH(items, it){
 					CCGreePaymentItem *item = dynamic_cast<CCGreePaymentItem *>(it);
-					jobject paymentItem = item->getPaymentItemObject();
+					jobject paymentItem = (jobject)item->getPaymentItemObject();
 
 					bool ret = l.env->CallBooleanMethod(list, l.methodID, paymentItem);
 				}

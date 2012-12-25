@@ -1,13 +1,11 @@
 #ifndef __CC_GREEREQUESTDIALOG_H__
 #define __CC_GREEREQUESTDIALOG_H__
 
-#include <map>
-
 #include "CCStdC.h"
 #include "cocoa/CCString.h"
 #include "cocoa/CCDictionary.h"
 
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 // setParams
 #define GD_REQUEST_DIALOG_PARAM_KEY_TITLE "title"
@@ -28,8 +26,8 @@ class CCGreeRequestDialog : CCObject {
 		void show();
 
 	private:
-		CCGreeRequestDialog(jobject obj);
-		jobject mRequestDialog;
+		CCGreeRequestDialog(void* obj);
+		void* mRequestDialog;
 };
 
 NS_CC_GREE_EXT_END

@@ -3,7 +3,7 @@
 
 #include "jni/JniHelper.h"
 #include "cocos2d.h"
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 NS_CC_GREE_EXT_BEGIN
 
@@ -41,9 +41,9 @@ class CCGreeFriendCode {
 		static void deleteCode();
 
 
-		static void handleLoadCodeOnSuccess(jobject code);
+		static void handleLoadCodeOnSuccess(void* code);
 		static void handleLoadCodeOnFailure(int responseCode, const char *response);
-		static void handleRequestCodeOnSuccess(jobject code);
+		static void handleRequestCodeOnSuccess(void* code);
 		static void handleRequestCodeOnFailure(int responseCode, const char *response);
 
 		static void handleDeleteCodeOnSuccess();
@@ -51,9 +51,9 @@ class CCGreeFriendCode {
 		static void handleVerifyCodeOnSuccess();
 		static void handleVerifyCodeOnFailure(int responseCode, const char *response);
 
-		static void handleLoadFriendIdsOnSuccess(int startIndex, int itemsPerPage, int totalResults, jobject *entries);
+		static void handleLoadFriendIdsOnSuccess(int startIndex, int itemsPerPage, int totalResults, void **entries);
 		static void handleLoadFriendIdsOnFailure(int responseCode, const char *response);
-		static void handleLoadOwnerOnSuccess(jobject owner);
+		static void handleLoadOwnerOnSuccess(void* owner);
 		static void handleLoadOwnerOnFailure(int responseCode, const char *response);
 		
 };
@@ -62,24 +62,24 @@ class CCGreeFriendCode {
 class CCGreeCode : public CCObject
 {
 	public:
-		CCGreeCode(jobject code);
+		CCGreeCode(void* code);
 		~CCGreeCode();
 		CCString *getCode();
 		CCString *getExpireTime();
 
 	private:
-		jobject mGreeCode;
+		void* mGreeCode;
 };
 
 class CCGreeData : public CCObject
 {
 	public:
-		CCGreeData(jobject data);
+		CCGreeData(void* data);
 		~CCGreeData();
 		CCString *getUserId();
 
 	private:
-		jobject mGreeData;
+		void* mGreeData;
 
 };
 

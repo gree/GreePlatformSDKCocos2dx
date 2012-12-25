@@ -2,6 +2,8 @@
 
 #include "CCGreePlatform.h"
 #include "CCGreeUser.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeUser.h"
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
@@ -30,16 +32,16 @@ static bool getEnv(JNIEnv **env){
 	return bRet;
 }
 
-CCGreeUser::CCGreeUser(jobject user){
+CCGreeUser::CCGreeUser(void* user){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeUser = pEnv->NewGlobalRef(user);
+	mGreeUser = (void*)(pEnv->NewGlobalRef((jobject)user));
 }
 
 CCGreeUser::~CCGreeUser(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeUser);
+	pEnv->DeleteGlobalRef((jobject)mGreeUser);
 }
 
 
@@ -111,26 +113,26 @@ int CCGreeUser::getUserGrade(){
 bool CCGreeUser::loadThumbnail(int size){
 	bool ret = false;
 	if(mGreeUser != NULL){
-		ret = loadUserThumbnailJni(mGreeUser, size, (void *)this);
+		ret = loadUserThumbnailJni((jobject)mGreeUser, size, (void *)this);
 	}
 	return ret;
 }
 
 void CCGreeUser::loadFriends(int offset, int count){
 	if(mGreeUser != NULL){
-		loadFriendsJni(mGreeUser, offset, count, (void *)this);
+		loadFriendsJni((jobject)mGreeUser, offset, count, (void *)this);
 	}
 }
 
 void CCGreeUser::loadIgnoredUserIds(int offset, int count){
 	if(mGreeUser != NULL){
-		loadIgnoredUserIdsJni(mGreeUser, offset, count, (void *)this);
+		loadIgnoredUserIdsJni((jobject)mGreeUser, offset, count, (void *)this);
 	}
 }
 
 void CCGreeUser::isIgnoringUserWithId(const char *pid){
 	if(mGreeUser != NULL){
-		isIgnoringUserWithIdJni(mGreeUser, pid, (void *)this);
+		isIgnoringUserWithIdJni((jobject)mGreeUser, pid, (void *)this);
 	}
 }
 
@@ -161,7 +163,7 @@ void CCGreeUser::handleLoadThumbnailOnFailure(int responseCode, const char *resp
 }
 
 
-void CCGreeUser::handleLoadFriendsOnSuccess(int index, int count, jobject *users)
+void CCGreeUser::handleLoadFriendsOnSuccess(int index, int count, void **users)
 {
 	CCArray *userArray = new CCArray();
 	for(int i = 0; i < count; i++){
@@ -185,7 +187,7 @@ void CCGreeUser::handleLoadFriendsOnFailure(int responseCode, const char *respon
 }
 
 
-void CCGreeUser::handleLoadUserWithIdOnSuccess(int index, int count, jobject *users)
+void CCGreeUser::handleLoadUserWithIdOnSuccess(int index, int count, void **users)
 {
 	CCArray *userArray = new CCArray();
 	for(int i = 0; i < count; i++){

@@ -2,7 +2,13 @@
 #include <string.h>
 #include <jni.h>
 
-#include "cocos-gree-ext.h"
+#include "CCGreeAuthorizer.h"
+#include "CCGreeUser.h"
+#include "CCGreePayment.h"
+#include "CCGreeAchievement.h"
+#include "CCGreeLeaderboard.h"
+#include "CCGreeFriendCode.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace std;
 using namespace cocos2d;
@@ -24,7 +30,7 @@ extern "C" {
 			}
 			if(delegate){
 				switch(funcType){
-					case fTypeLoadUserThumbnil:
+					case fTypeLoadUserThumbnail:
 						((CCGreeUser *)delegate)->handleLoadThumbnailOnSuccess(pBuf, width, height);
 						break;
 					case fTypeLoadAchievementThumbnail:
@@ -49,7 +55,7 @@ extern "C" {
 		const char* str = env->GetStringUTFChars(response, 0);
 		if(delegate){
 			switch(funcType){
-				case fTypeLoadUserThumbnil:
+				case fTypeLoadUserThumbnail:
 					((CCGreeUser *)delegate)->handleLoadThumbnailOnFailure(responseCode, str);
 					break;
 				case fTypeLoadAchievementThumbnail:
@@ -78,7 +84,7 @@ extern "C" {
 			if(delegate){
 				switch(funcType){
 					case fTypeLoadFriends:
-						((CCGreeUser *)delegate)->handleLoadFriendsOnSuccess(index, count, pArr);
+						((CCGreeUser *)delegate)->handleLoadFriendsOnSuccess(index, count, (void **)pArr);
 						break;
 					default:
 						CCLog("++++++ No appropriate callback for %s", __func__);
@@ -86,7 +92,7 @@ extern "C" {
 				}
 			}else{
 				if(funcType == fTypeLoadUserWithId){
-					CCGreeUser::handleLoadUserWithIdOnSuccess(index, count, pArr);
+					CCGreeUser::handleLoadUserWithIdOnSuccess(index, count, (void **)pArr);
 				}else{
 					CCLog("++++++ No appropriate callback for %s", __func__);
 				}
@@ -99,7 +105,7 @@ extern "C" {
 		const char* str = env->GetStringUTFChars(response, 0);
 		if(delegate){
 			switch(funcType){
-				case fTypeLoadUserThumbnil:
+				case fTypeLoadUserThumbnail:
 					((CCGreeUser *)delegate)->handleLoadFriendsOnFailure(responseCode, str);
 					break;
 				default:
@@ -184,7 +190,7 @@ extern "C" {
 			for(int i = 0; i < totalListSize; i++){
 				pArr[i] = env->GetObjectArrayElement(elements, i);
 			}
-			CCGreeAchievement::handleLoadAchievementsOnSuccess(index, totalListSize, pArr);
+			CCGreeAchievement::handleLoadAchievementsOnSuccess(index, totalListSize, (void **)pArr);
 			free(pArr);
 		}
 	}
@@ -402,7 +408,7 @@ extern "C" {
 			for(int i = 0; i < totalListSize; i++){
 				pArr[i] = env->GetObjectArrayElement(leaderboards, i);
 			}
-			CCGreeLeaderboard::handleLoadLeaderboardsOnSuccess(index, totalListSize, pArr);
+			CCGreeLeaderboard::handleLoadLeaderboardsOnSuccess(index, totalListSize, (void **)pArr);
 			free(pArr);
 		}
 	}
@@ -458,7 +464,7 @@ extern "C" {
 			}
 			CCGreeLeaderboard *pGreeLeaderboard = (CCGreeLeaderboard *)delegate;
 			if(pGreeLeaderboard != NULL){
-				pGreeLeaderboard->handleGetScoreOnSuccess(listSize, pArr);
+				pGreeLeaderboard->handleGetScoreOnSuccess(listSize, (void **)pArr);
 			}
 			free(pArr);
 		}
@@ -547,7 +553,7 @@ extern "C" {
 			for(int i = 0; i < totalResults; i++){
 				pArr[i] = env->GetObjectArrayElement(entries, i);
 			}
-			CCGreeFriendCode::handleLoadFriendIdsOnSuccess(startIndex, itemsPerPage, totalResults, pArr);
+			CCGreeFriendCode::handleLoadFriendIdsOnSuccess(startIndex, itemsPerPage, totalResults, (void **)pArr);
 			free(pArr);
 		}
 	}

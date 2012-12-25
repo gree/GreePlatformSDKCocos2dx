@@ -3,6 +3,8 @@
 
 #include "CCDirector.h"
 
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+
 using namespace cocos2d;
 using namespace cocos2d::gree_extension;
 

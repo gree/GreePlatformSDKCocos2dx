@@ -4,7 +4,7 @@
 #include "jni/JniHelper.h"
 
 #include "cocos2d.h"
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 #include <android/log.h>
 #include <string.h>
@@ -37,7 +37,7 @@ class CCGreeAchievementDelegate{
 class CCGreeAchievement : public CCObject
 {
 	public:
-		CCGreeAchievement(jobject element);
+		CCGreeAchievement(void* element);
 		~CCGreeAchievement();	
 
 		// Static Func
@@ -58,7 +58,7 @@ class CCGreeAchievement : public CCObject
 
 
 		// Callback Handling
-		static void handleLoadAchievementsOnSuccess(int index, int count, jobject *elements);
+		static void handleLoadAchievementsOnSuccess(int index, int count, void **elements);
 		static void handleLoadAchievementsOnFailure(int responseCode, const char* response);
 
 		void handleLockOnSuccess();
@@ -69,7 +69,7 @@ class CCGreeAchievement : public CCObject
 		void handleLoadThumbnailOnFailure(int responseCode, const char* response);
 
 	private:
-		jobject mGreeAchievement; // Java GreeAchievement Object
+		void* mGreeAchievement; // Java GreeAchievement Object, and also will be used Objective-C
 };
 
 

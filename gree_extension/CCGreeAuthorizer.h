@@ -7,11 +7,9 @@
 #include <string.h>
 #include <jni.h>
 
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 #include "cocoa/CCString.h"
-#include "cocoa/CCInteger.h"
-
 #include "platform/CCImage.h"
 
 NS_CC_GREE_EXT_BEGIN

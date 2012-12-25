@@ -18,7 +18,7 @@ extern "C"
 	double getUnitPriceJni(jobject obj);
 	int getQuantityJni(jobject obj);
 	std::string getImageUrlJni(jobject obj);
-	std::string getDescription(jobject obj);
+	std::string getDescriptionJni(jobject obj);
 
 
 // Payment

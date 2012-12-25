@@ -1,6 +1,8 @@
 #include "CCGreePlatform.h"
 #include "CCGreeDashboard.h"
 
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeDashboard.h"
+
 using namespace cocos2d;
 
 NS_CC_GREE_EXT_BEGIN

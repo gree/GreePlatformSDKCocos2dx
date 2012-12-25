@@ -1,8 +1,8 @@
-//#include "cocos2d.h"
-//#include "cocos-gree-ext.h"
-
 #include "CCGreePlatform.h"
 #include "CCGreeFriendCode.h"
+
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeFriendCode.h"
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
@@ -60,7 +60,7 @@ void CCGreeFriendCode::loadOwner(){
 
 
 // Callback Handling
-void CCGreeFriendCode::handleLoadCodeOnSuccess(jobject code){
+void CCGreeFriendCode::handleLoadCodeOnSuccess(void* code){
 	CCGreeFriendCodeDelegate *delegate = CCGreePlatform::getFriendCodeDelegate();
 	if(delegate != NULL){
 		CCGreeCode *pCode = new CCGreeCode(code);
@@ -78,7 +78,7 @@ void CCGreeFriendCode::handleLoadCodeOnFailure(int responseCode, const char*resp
 }
 
 
-void CCGreeFriendCode::handleRequestCodeOnSuccess(jobject code){
+void CCGreeFriendCode::handleRequestCodeOnSuccess(void* code){
 	CCGreeFriendCodeDelegate *delegate = CCGreePlatform::getFriendCodeDelegate();
 	if(delegate != NULL){
 		CCGreeCode *pCode = new CCGreeCode(code);
@@ -128,7 +128,7 @@ void CCGreeFriendCode::handleVerifyCodeOnFailure(int responseCode, const char* r
 	}
 }
 
-void CCGreeFriendCode::handleLoadFriendIdsOnSuccess(int startIndex, int itemsPerPage, int totalResults, jobject *entries){
+void CCGreeFriendCode::handleLoadFriendIdsOnSuccess(int startIndex, int itemsPerPage, int totalResults, void **entries){
 	CCArray *dataArray = new CCArray();
 	for(int i = 0; i < totalResults; i++){
 		CCGreeData *data = new CCGreeData(entries[i]);
@@ -150,7 +150,7 @@ void CCGreeFriendCode::handleLoadFriendIdsOnFailure(int responseCode, const char
 	}
 }
 
-void CCGreeFriendCode::handleLoadOwnerOnSuccess(jobject owner){
+void CCGreeFriendCode::handleLoadOwnerOnSuccess(void* owner){
 	CCGreeData *data = NULL;
 	if(owner != NULL){
 		data = new CCGreeData(owner);
@@ -174,15 +174,15 @@ void CCGreeFriendCode::handleLoadOwnerOnFailure(int responseCode, const char* re
 
 
 // CCGreeCode
-CCGreeCode::CCGreeCode(jobject code){
+CCGreeCode::CCGreeCode(void* code){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeCode = pEnv->NewGlobalRef(code);
+	mGreeCode = (void *)(pEnv->NewGlobalRef((jobject)code));
 }
 CCGreeCode::~CCGreeCode(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeCode);
+	pEnv->DeleteGlobalRef((jobject)mGreeCode);
 }
 
 CCString *CCGreeCode::getCode(){
@@ -193,15 +193,15 @@ CCString *CCGreeCode::getExpireTime(){
 }
 
 // CCGreeData
-CCGreeData::CCGreeData(jobject data){
+CCGreeData::CCGreeData(void *data){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeData = pEnv->NewGlobalRef(data);
+	mGreeData = (void *)(pEnv->NewGlobalRef((jobject)data));
 }
 CCGreeData::~CCGreeData(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeData);
+	pEnv->DeleteGlobalRef((jobject)mGreeData);
 }
 
 CCString *CCGreeData::getUserId(){

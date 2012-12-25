@@ -2,6 +2,8 @@
 
 #include "CCGreePlatform.h"
 #include "CCGreeAuthorizer.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeAuthorizer.h"
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 

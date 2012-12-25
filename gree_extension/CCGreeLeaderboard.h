@@ -3,7 +3,7 @@
 
 #include "jni/JniHelper.h"
 #include "cocos2d.h"
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 // leaderbaord selector
 typedef enum {
@@ -35,7 +35,7 @@ class CCGreeLeaderboard;
 class CCGreeScore : public CCObject
 {
 	public:
-		CCGreeScore(jobject element);
+		CCGreeScore(void* element);
 		~CCGreeScore();
 
 		CCString *getId();
@@ -51,7 +51,7 @@ class CCGreeScore : public CCObject
 		void handleLoadThumbnailOnSuccess(int *arr, int width, int height);
 		void handleLoadThumbnailOnFailure(int responseCode, const char *response);
 	private:
-		jobject mGreeScore;
+		void* mGreeScore;
 };
 
 
@@ -79,7 +79,7 @@ class CCGreeLeaderboardDelegate
 class CCGreeLeaderboard : public CCObject
 {
 	public:
-		CCGreeLeaderboard(jobject element);
+		CCGreeLeaderboard(void* element);
 		~CCGreeLeaderboard();
 
 		static void loadLeaderboards(int index, int count);
@@ -102,7 +102,7 @@ class CCGreeLeaderboard : public CCObject
 		bool loadThumbnail();
 
 		// callback
-		static void handleLoadLeaderboardsOnSuccess(int index, int count, jobject *leaderboards);
+		static void handleLoadLeaderboardsOnSuccess(int index, int count, void **leaderboards);
 		static void handleLoadLeaderboardsOnFailure(int responseCode, const char* response);
 
 
@@ -110,12 +110,12 @@ class CCGreeLeaderboard : public CCObject
 		void handleCreateScoreOnFailure(int responseCode, const char* response);
 		void handleDeleteScoreOnSuccess();
 		void handleDeleteScoreOnFailure(int responseCode, const char* response);
-		void handleGetScoreOnSuccess(int count, jobject *entries);
+		void handleGetScoreOnSuccess(int count, void **entries);
 		void handleGetScoreOnFailure(int responseCode, const char* response);
 		void handleLoadThumbnailOnSuccess(int *arr, int width, int height);
 		void handleLoadThumbnailOnFailure(int responseCode, const char *response);
 	private:
-		 jobject mGreeLeaderboard;
+		 void* mGreeLeaderboard;
 };
 
 NS_CC_GREE_EXT_END

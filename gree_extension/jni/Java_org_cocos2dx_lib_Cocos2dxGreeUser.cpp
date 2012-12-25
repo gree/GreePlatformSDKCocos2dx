@@ -3,9 +3,8 @@
 #include <jni.h>
 
 #include "CCDirector.h"
-#include "cocos-gree-ext.h"
-
 #include "CCGreeUser.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace std;
 using namespace cocos2d;
@@ -250,7 +249,7 @@ extern "C" {
 		if(GreeJniHelper::getInstanceMethodInfo(t, obj, "loadThumbnail", "(ILnet/gree/asdk/api/IconDownloadListener;)Z")){
 			JniMethodInfo l;
 			if(JniHelper::getMethodInfo(l, "org/cocos2dx/lib/gree/NativeIconDownloadListener", "<init>", "(JI)V")){
-				jobject listener = l.env->NewObject(l.classID, l.methodID, (unsigned long long)delegate, (int)fTypeLoadUserThumbnil);
+				jobject listener = l.env->NewObject(l.classID, l.methodID, (unsigned long long)delegate, (int)fTypeLoadUserThumbnail);
 				// FIXME listener might well be made NewGlobalRef.....
 				if(listener == NULL){
 					CCLog("Cannot create new listener object in %s", __func__);

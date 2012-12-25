@@ -3,6 +3,9 @@
 #include "CCGreePlatform.h"
 #include "CCGreeLeaderboard.h"
 
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeLeaderboard.h"
+
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
 using namespace cocos2d;
@@ -32,16 +35,16 @@ static bool getEnv(JNIEnv **env){
 
 
 // CCGreeScore
-CCGreeScore::CCGreeScore(jobject element){
+CCGreeScore::CCGreeScore(void* element){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeScore = pEnv->NewGlobalRef(element);
+	mGreeScore = (void*)(pEnv->NewGlobalRef((jobject)element));
 }
 
 CCGreeScore::~CCGreeScore(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeScore);
+	pEnv->DeleteGlobalRef((jobject)mGreeScore);
 }
 
 
@@ -50,7 +53,7 @@ CCString *CCGreeScore::getId(){
 }
 
 CCString *CCGreeScore::getNickname(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getNickname, mGreeScore);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getScoreNickname, mGreeScore);
 }
 
 CCString *CCGreeScore::getThumbnailUrl(){
@@ -60,18 +63,18 @@ CCString *CCGreeScore::getThumbnailUrl(){
 
 long long CCGreeScore::getRank(){
 	if(mGreeScore != NULL){
-		return getScoreRankJni(mGreeScore);
+		return getScoreRankJni((jobject)mGreeScore);
 	}
 }
 
 long long CCGreeScore::getScore(){
 	if(mGreeScore != NULL){
-		return getScoreJni(mGreeScore);
+		return getScoreJni((jobject)mGreeScore);
 	}
 }
 
 CCString *CCGreeScore::getScoreAsString(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getScoreAsString, mGreeScore);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getScoreAsString, (jobject)mGreeScore);
 }
 
 CCImage *CCGreeScore::getThumbnail(int size){
@@ -79,7 +82,7 @@ CCImage *CCGreeScore::getThumbnail(int size){
 	int *parr = NULL;
 	CCImage *img = NULL;
 	if(mGreeScore != NULL){
-		getScoreThumbnailJni(mGreeScore, size, &parr, &width, &height);
+		getScoreThumbnailJni((jobject)mGreeScore, size, &parr, &width, &height);
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
@@ -92,7 +95,7 @@ CCImage *CCGreeScore::getThumbnail(int size){
 bool CCGreeScore::loadThumbnail(int size){
 	bool ret = false;
 	if(mGreeScore != NULL){
-		ret = loadScoreThumbnailJni(mGreeScore, size, (void *)this);
+		ret = loadScoreThumbnailJni((jobject)mGreeScore, size, (void *)this);
 	}
 	return ret;
 }
@@ -116,16 +119,16 @@ void CCGreeScore::handleLoadThumbnailOnFailure(int responseCode, const char *res
 }
 
 // CCGreeLeaderboard
-CCGreeLeaderboard::CCGreeLeaderboard(jobject element){
+CCGreeLeaderboard::CCGreeLeaderboard(void* element){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeLeaderboard = pEnv->NewGlobalRef(element);
+	mGreeLeaderboard = (void *)(pEnv->NewGlobalRef((jobject)element));
 }
 
 CCGreeLeaderboard::~CCGreeLeaderboard(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeLeaderboard);
+	pEnv->DeleteGlobalRef((jobject)mGreeLeaderboard);
 }
 
 void CCGreeLeaderboard::loadLeaderboards(int index, int count){
@@ -135,14 +138,14 @@ void CCGreeLeaderboard::loadLeaderboards(int index, int count){
 void CCGreeLeaderboard::createScore(long long score)
 {
 	if(mGreeLeaderboard != NULL){
-		createScoreJni(mGreeLeaderboard, score, (void *)this);
+		createScoreJni((jobject)mGreeLeaderboard, score, (void *)this);
 	}
 }
 
 void CCGreeLeaderboard::deleteScore()
 {
 	if(mGreeLeaderboard != NULL){
-		deleteScoreJni(mGreeLeaderboard, (void *)this);
+		deleteScoreJni((jobject)mGreeLeaderboard, (void *)this);
 	}
 }
 
@@ -150,45 +153,45 @@ void CCGreeLeaderboard::deleteScore()
 void CCGreeLeaderboard::getScore(int selector, int period, int index, int count)
 {
 	if(mGreeLeaderboard != NULL){
-		getLeaderboardScoresJni(mGreeLeaderboard, selector, period, index, count, (void *)this);
+		getLeaderboardScoresJni((jobject)mGreeLeaderboard, selector, period, index, count, (void *)this);
 	}
 }
 
 
 CCString *CCGreeLeaderboard::getId(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardId, mGreeLeaderboard);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardId, (jobject)mGreeLeaderboard);
 }
 
 CCString *CCGreeLeaderboard::getName(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardName, mGreeLeaderboard);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardName, (jobject)mGreeLeaderboard);
 }
 
 CCString *CCGreeLeaderboard::getThumbnailUrl(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardThumbnailUrl, mGreeLeaderboard);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getLeaderboardThumbnailUrl, (jobject)mGreeLeaderboard);
 }
 
 int CCGreeLeaderboard::getFormat(){
-	CALL_JNI_INT_METHOD_WITHOBJECT(getFormat, mGreeLeaderboard);
+	CALL_JNI_INT_METHOD_WITHOBJECT(getFormat, (jobject)mGreeLeaderboard);
 }
 
 CCString *CCGreeLeaderboard::getFormatSuffix(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getFormatSuffix, mGreeLeaderboard);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getFormatSuffix, (jobject)mGreeLeaderboard);
 }
 
 CCString *CCGreeLeaderboard::getTimeFormat(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getTimeFormat, mGreeLeaderboard);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getTimeFormat, (jobject)mGreeLeaderboard);
 }
 
 int CCGreeLeaderboard::getFormatDecimal(){
-	CALL_JNI_INT_METHOD_WITHOBJECT(getFormatDecimal, mGreeLeaderboard);
+	CALL_JNI_INT_METHOD_WITHOBJECT(getFormatDecimal, (jobject)mGreeLeaderboard);
 }
 
 int CCGreeLeaderboard::getSort(){
-	CALL_JNI_INT_METHOD_WITHOBJECT(getSort, mGreeLeaderboard);
+	CALL_JNI_INT_METHOD_WITHOBJECT(getSort, (jobject)mGreeLeaderboard);
 }
 
 bool CCGreeLeaderboard::isSecret(){
-	CALL_JNI_BOOL_METHOD_WITHOBJECT(isLeaderboardSecret, mGreeLeaderboard);
+	CALL_JNI_BOOL_METHOD_WITHOBJECT(isLeaderboardSecret, (jobject)mGreeLeaderboard);
 }
 
 CCImage *CCGreeLeaderboard::getThumbnail(){
@@ -196,7 +199,7 @@ CCImage *CCGreeLeaderboard::getThumbnail(){
 	int *parr = NULL;
 	CCImage *img = NULL;
 	if(mGreeLeaderboard != NULL){
-		getLeaderboardThumbnailJni(mGreeLeaderboard, &parr, &width, &height);
+		getLeaderboardThumbnailJni((jobject)mGreeLeaderboard, &parr, &width, &height);
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
@@ -209,12 +212,12 @@ CCImage *CCGreeLeaderboard::getThumbnail(){
 bool CCGreeLeaderboard::loadThumbnail(){
 	bool ret = false;
 	if(mGreeLeaderboard != NULL){
-		ret = loadLeaderboardThumbnailJni(mGreeLeaderboard, (void *)this);
+		ret = loadLeaderboardThumbnailJni((jobject)mGreeLeaderboard, (void *)this);
 	}
 	return ret;
 }
 
-void CCGreeLeaderboard::handleLoadLeaderboardsOnSuccess(int index, int count, jobject *leaderboards)
+void CCGreeLeaderboard::handleLoadLeaderboardsOnSuccess(int index, int count, void **leaderboards)
 {
 	CCArray *leaderboardArray = new CCArray();
 	for(int i = 0; i < count; i++){
@@ -270,7 +273,7 @@ void CCGreeLeaderboard::handleDeleteScoreOnFailure(int responseCode, const char 
 	}
 }
 
-void CCGreeLeaderboard::handleGetScoreOnSuccess(int count, jobject *entries){
+void CCGreeLeaderboard::handleGetScoreOnSuccess(int count, void **entries){
 	CCArray *scoreArray = new CCArray();
 	for(int i = 0; i < count; i++){
 		scoreArray->addObject(new CCGreeScore(entries[i]));

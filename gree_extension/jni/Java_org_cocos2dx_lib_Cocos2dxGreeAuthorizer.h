@@ -3,8 +3,6 @@
 
 #include <string.h>
 
-#include "cocos-gree-ext.h"
-
 extern "C"
 {
 	void authorizeJni(int userGrade);

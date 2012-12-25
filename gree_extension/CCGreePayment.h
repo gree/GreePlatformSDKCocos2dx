@@ -7,10 +7,9 @@
 #include <string.h>
 #include <jni.h>
 
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 #include "cocoa/CCString.h"
-#include "cocoa/CCInteger.h"
 
 
 NS_CC_GREE_EXT_BEGIN 
@@ -31,7 +30,7 @@ class CCGreePaymentDelegate {
 class CCGreePaymentItem : public CCObject
 {
 	public:
-		CCGreePaymentItem(jobject obj);
+		CCGreePaymentItem(void* obj);
 		static CCGreePaymentItem *create(const char *itemId, const char* itemName, double unitPrice, int quantity);
 		void setImageUrl(const char *url);
 		void setDescription(const char *desc);
@@ -42,10 +41,10 @@ class CCGreePaymentItem : public CCObject
 		CCString *getImageUrl(); 
 		CCString *getDescription();
 
-		jobject getPaymentItemObject();
+		void* getPaymentItemObject();
 	private:
 		
-		jobject mPaymentItemObj;
+		void* mPaymentItemObj;
 };
 			
 
@@ -53,7 +52,7 @@ class CCGreePaymentItem : public CCObject
 class CCGreePayment : public CCObject
 {
 	public:
-		CCGreePayment(jobject obj);
+		CCGreePayment(void* obj);
 		static CCGreePayment* create(const char *message, CCArray *items);
 		static void verify(const char *paymentId);
 		
@@ -68,7 +67,7 @@ class CCGreePayment : public CCObject
 		static void handlePaymentVerifyOnCancel(int responseCode, const char* paymentId);
 		static void handlePaymentVerifyOnFailure(int responseCode, const char* paymentId, const char* response);
 	private:
-		jobject mPaymentObj;
+		void* mPaymentObj;
 };
 
 NS_CC_GREE_EXT_END

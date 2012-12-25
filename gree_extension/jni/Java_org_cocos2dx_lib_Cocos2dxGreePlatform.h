@@ -3,12 +3,8 @@
 
 #include <string.h>
 
-#include "cocos-gree-ext.h"
-
-// NativeLoadThumbnailListener
-
 typedef enum {
-	fTypeLoadUserThumbnil = 1,
+	fTypeLoadUserThumbnail = 1,
 	fTypeLoadAchievementThumbnail,
 	fTypeLoadLeaderboardThumbnail,
 	fTypeLoadScoreThumbnail,
@@ -67,7 +63,7 @@ typedef enum {
 
 #define CALL_JNI_STRING_METHOD_WITHOBJECT(func, obj) \
 	if(obj != NULL){ \
-		const std::string str = func##Jni(obj); \
+		const std::string str = func##Jni((jobject)obj); \
 		CCString *ret = new CCString(str); \
 		ret->autorelease(); \
 			return ret; \
@@ -77,14 +73,14 @@ typedef enum {
 #define CALL_JNI_INT_METHOD_WITHOBJECT(func, obj) \
 	int ret = -1; \
 	if(obj != NULL){ \
-		ret = func##Jni(obj); \
+		ret = func##Jni((jobject)obj); \
 	} \
 	return ret;
 
 #define CALL_JNI_BOOL_METHOD_WITHOBJECT(func, obj) \
 	bool ret = false; \
 	if(obj != NULL){ \
-		ret = func##Jni(obj); \
+		ret = func##Jni((jobject)obj); \
 	} \
 	return ret;
 

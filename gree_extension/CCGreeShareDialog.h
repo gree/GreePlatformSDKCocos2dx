@@ -1,13 +1,11 @@
 #ifndef __CC_GREESHAREDIALOG_H__
 #define __CC_GREESHAREDIALOG_H__
 
-#include <map>
-
 #include "CCStdC.h"
 #include "cocoa/CCString.h"
 #include "cocoa/CCDictionary.h"
 
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 // setParams
 #define GD_SHARE_DIALOG_PARAM_KEY_MESSAGE "message"
@@ -24,8 +22,8 @@ class CCGreeShareDialog : CCObject {
 		void show();
 
 	private:
-		CCGreeShareDialog(jobject obj);
-		jobject mShareDialog;
+		CCGreeShareDialog(void* obj);
+		void* mShareDialog;
 };
 
 NS_CC_GREE_EXT_END

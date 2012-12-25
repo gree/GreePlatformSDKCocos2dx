@@ -4,14 +4,13 @@
 #include "jni/JniHelper.h"
 
 #include "cocos2d.h"
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 #include <android/log.h>
 #include <string.h>
 #include <jni.h>
 
 #include "cocoa/CCString.h"
-#include "cocoa/CCInteger.h"
 #include "cocoa/CCArray.h"
 
 #include "platform/CCImage.h"
@@ -51,7 +50,7 @@ class CCGreeUserDelegate
 class CC_DLL CCGreeUser : public CCObject
 {
 	public:
-		CCGreeUser(jobject user);
+		CCGreeUser(void* user);
 		~CCGreeUser();	
 		static void loadUserWithId(const char *pid);
 		//CCBitmap getThumbnail();
@@ -82,18 +81,18 @@ class CC_DLL CCGreeUser : public CCObject
 		void handleSuccess(int *arr, int width, int height);
 		void handleLoadThumbnailOnSuccess(int *arr, int width, int height);
 		void handleLoadThumbnailOnFailure(int responseCode, const char* response);
-		void handleLoadFriendsOnSuccess(int index, int count, jobject *users);
+		void handleLoadFriendsOnSuccess(int index, int count, void **users);
 		void handleLoadFriendsOnFailure(int responseCode, const char* response);
 		void handleLoadIgnoredUserIdsOnSuccess(int index, int count, const char** users);
 		void handleLoadIgnoredUserIdsOnFailure(int responseCode, const char* response);
 		void handleIsIgnoringUserWithIdOnSuccess(int index, int count, const char** users);
 		void handleIsIgnoringUserWithIdOnFailure(int responseCode, const char* response);
 
-		static void handleLoadUserWithIdOnSuccess(int index, int count, jobject *users);
+		static void handleLoadUserWithIdOnSuccess(int index, int count, void **users);
 		static void handleLoadUserWithIdOnFailure(int responseCode, const char* response);
 
 	private:
-		jobject mGreeUser; // Java GreeUser Object
+		void* mGreeUser; // Java GreeUser Object, and also will be used Objective-C
 };
 
 

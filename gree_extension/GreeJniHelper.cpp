@@ -1,3 +1,4 @@
+#include "CCDirector.h"
 #include "GreeJniHelper.h"
 #include <android/log.h>
 

@@ -5,6 +5,7 @@
 #include "CCDirector.h"
 
 #include "CCGreeAchievement.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
@@ -59,7 +60,7 @@ extern  "C" {
 		}
 		return ret;
 	}
-	std::string getDescriptionJni(jobject obj){
+	std::string getAchievementDescriptionJni(jobject obj){
 		JniMethodInfo t;
 		std::string ret;
 		if(GreeJniHelper::getInstanceMethodInfo(t, obj, "getDescription", "()Ljava/lang/String;")){

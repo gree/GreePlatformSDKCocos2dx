@@ -1,6 +1,7 @@
 #include "CCGreePlatform.h"
 
 #include "CCGreeUser.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace cocos2d;
 

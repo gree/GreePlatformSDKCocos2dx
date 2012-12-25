@@ -1,13 +1,11 @@
 #ifndef __CC_GREEDASHBOARD_H__
 #define __CC_GREEDASHBOARD_H__
 
-
-//#include "platform/CCPlatformMacros.h"
 #include "CCStdC.h"
 #include "cocoa/CCString.h"
 #include "cocoa/CCDictionary.h"
 
-#include "cocos-gree-ext.h"
+#include "GreeExtensionMacros.h"
 
 using namespace std;
 

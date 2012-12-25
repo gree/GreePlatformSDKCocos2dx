@@ -3,7 +3,6 @@
 
 #include <string.h>
 #include "cocos2d.h"
-//#include "cocos-gree-ext.h"
 
 extern "C"
 {

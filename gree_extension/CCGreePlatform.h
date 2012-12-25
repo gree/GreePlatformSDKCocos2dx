@@ -1,14 +1,20 @@
 #ifndef __CC_GREEPLATFORM_H__
 #define __CC_GREEPLATFORM_H__
 
+#include "GreeExtensionMacros.h"
+#include "CCGreeAuthorizer.h"
+#include "CCGreeDashboard.h"
+#include "CCGreeUser.h"
+#include "CCGreePayment.h"
+#include "CCGreeAchievement.h"
+#include "CCGreeLeaderboard.h"
+#include "CCGreeInviteDialog.h"
+#include "CCGreeRequestDialog.h"
+#include "CCGreeShareDialog.h"
+#include "CCGreeFriendCode.h"
 
-#include "cocos-gree-ext.h"
-
-//#include "platform/CCPlatformMacros.h"
 #include "CCStdC.h"
 #include "cocoa/CCString.h"
-
-#include "CCGreeUser.h"
 
 NS_CC_GREE_EXT_BEGIN;
 

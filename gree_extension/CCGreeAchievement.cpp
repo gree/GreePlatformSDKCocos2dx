@@ -3,6 +3,9 @@
 #include "CCGreePlatform.h"
 #include "CCGreeAchievement.h"
 
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxGreeAchievement.h"
+
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
 using namespace cocos2d;
@@ -31,16 +34,16 @@ static bool getEnv(JNIEnv **env){
 }
 
 
-CCGreeAchievement::CCGreeAchievement(jobject element){
+CCGreeAchievement::CCGreeAchievement(void* element){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	mGreeAchievement = pEnv->NewGlobalRef(element);
+	mGreeAchievement = (void*)(pEnv->NewGlobalRef((jobject)element));
 }
 
 CCGreeAchievement::~CCGreeAchievement(){
 	JNIEnv *pEnv = 0;
 	getEnv(&pEnv);
-	pEnv->DeleteGlobalRef(mGreeAchievement);
+	pEnv->DeleteGlobalRef((jobject)mGreeAchievement);
 }
 
 
@@ -58,7 +61,7 @@ CCString *CCGreeAchievement::getName(){
 }
 
 CCString *CCGreeAchievement::getDescription(){
-	CALL_JNI_STRING_METHOD_WITHOBJECT(getDescription, mGreeAchievement);
+	CALL_JNI_STRING_METHOD_WITHOBJECT(getAchievementDescription, mGreeAchievement);
 }
 
 int CCGreeAchievement::getScore(){
@@ -77,7 +80,7 @@ bool CCGreeAchievement::loadThumbnail(){
 	//CALL_JNI_BOOL_METHOD(loadAchievementThumbnail);
 	bool ret = false;
 	if(mGreeAchievement != NULL){
-		ret = loadAchievementThumbnailJni(mGreeAchievement, (void *)this);
+		ret = loadAchievementThumbnailJni((jobject)mGreeAchievement, (void *)this);
 	}
 	return ret;
 }
@@ -87,7 +90,7 @@ CCImage *CCGreeAchievement::getIcon(){
 	int *parr = NULL;
 	CCImage *img = NULL;
 	if(mGreeAchievement != NULL){
-		getIconJni(mGreeAchievement, &parr, &width, &height);
+		getIconJni((jobject)mGreeAchievement, &parr, &width, &height);
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
@@ -98,16 +101,16 @@ CCImage *CCGreeAchievement::getIcon(){
 }
 
 void CCGreeAchievement::lock(){
-	lockJni(mGreeAchievement, (void *)this);
+	lockJni((jobject)mGreeAchievement, (void *)this);
 }
 
 void CCGreeAchievement::unlock(){
-	unlockJni(mGreeAchievement, (void *)this);
+	unlockJni((jobject)mGreeAchievement, (void *)this);
 }
 
 
 // Callback Handling
-void CCGreeAchievement::handleLoadAchievementsOnSuccess(int index, int count, jobject *elements)
+void CCGreeAchievement::handleLoadAchievementsOnSuccess(int index, int count, void **elements)
 {
 	CCArray *elementArray = new CCArray();
 	for(int i = 0; i < count; i++){

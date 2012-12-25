@@ -10,7 +10,7 @@ extern "C"
 	void loadAchievementsJni(int index, int count);
 	std::string getAchievementIdJni(jobject obj);
 	std::string getAchievementNameJni(jobject obj);
-	std::string getDescriptionJni(jobject obj);
+	std::string getAchievementDescriptionJni(jobject obj);
 	int getAchievementScoreJni(jobject obj);
 	bool isUnlockedJni(jobject obj);
 	bool isSecretJni(jobject obj);

@@ -2,8 +2,7 @@
 #define __CGREEJNIHELPER_H__
 
 #include "jni/JniHelper.h"
-#include "cocos-gree-ext.h"
-
+#include "GreeExtensionMacros.h"
 
 NS_CC_GREE_EXT_BEGIN
 
