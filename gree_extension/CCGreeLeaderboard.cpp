@@ -86,6 +86,7 @@ CCImage *CCGreeScore::getThumbnail(int size){
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
+		img->autorelease();
 		img->initWithImageData((void*)parr, width * height * 4, CCImage::kFmtRawData, width, height);
 		free(parr);
 	}
@@ -103,6 +104,7 @@ bool CCGreeScore::loadThumbnail(int size){
 
 void CCGreeScore::handleLoadThumbnailOnSuccess(int *arr, int width, int height){
 	CCImage* img = new CCImage();
+	img->autorelease();
 	img->initWithImageData((void *)arr, width * height * 4, CCImage::kFmtRawData, width, height);
 	CCGreeLeaderboardDelegate *delegate = CCGreePlatform::getLeaderboardDelegate();
 	if(delegate != NULL){
@@ -203,6 +205,7 @@ CCImage *CCGreeLeaderboard::getThumbnail(){
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
+		img->autorelease();
 		img->initWithImageData((void*)parr, width * height * 4, CCImage::kFmtRawData, width, height);
 		free(parr);
 	}
@@ -221,7 +224,16 @@ void CCGreeLeaderboard::handleLoadLeaderboardsOnSuccess(int index, int count, vo
 {
 	CCArray *leaderboardArray = new CCArray();
 	for(int i = 0; i < count; i++){
-		leaderboardArray->addObject(new CCGreeLeaderboard(leaderboards[i]));
+		CCGreeLeaderboard *board = new CCGreeLeaderboard(leaderboards[i]);
+		board->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		board->retain();
+		leaderboardArray->addObject(board);
 	}
 	CCGreeLeaderboardDelegate *delegate = CCGreePlatform::getLeaderboardDelegate();
 	if(delegate != NULL){
@@ -276,7 +288,16 @@ void CCGreeLeaderboard::handleDeleteScoreOnFailure(int responseCode, const char 
 void CCGreeLeaderboard::handleGetScoreOnSuccess(int count, void **entries){
 	CCArray *scoreArray = new CCArray();
 	for(int i = 0; i < count; i++){
-		scoreArray->addObject(new CCGreeScore(entries[i]));
+		CCGreeScore *score = new CCGreeScore(entries[i]);
+		score->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		score->retain();
+		scoreArray->addObject(score);
 	}
 	CCGreeLeaderboardDelegate *delegate = CCGreePlatform::getLeaderboardDelegate();
 	if(delegate != NULL){
@@ -295,6 +316,7 @@ void CCGreeLeaderboard::handleGetScoreOnFailure(int responseCode, const char *re
 
 void CCGreeLeaderboard::handleLoadThumbnailOnSuccess(int *arr, int width, int height){
 	CCImage* img = new CCImage();
+	img->autorelease();
 	img->initWithImageData((void *)arr, width * height * 4, CCImage::kFmtRawData, width, height);
 	CCGreeLeaderboardDelegate *delegate = CCGreePlatform::getLeaderboardDelegate();
 	if(delegate != NULL){

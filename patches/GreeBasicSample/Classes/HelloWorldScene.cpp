@@ -453,6 +453,7 @@ void HelloWorld::showResult(std::string* str1, std::string* str2){
 // User
 void HelloWorld::loadThumbnailSuccess(CCGreeUser* user, CCImage *img){
 	CCLog("++++++ %s", __func__);
+	img->retain(); // To use mainthread
 	std::string str1 = "Callback";
 	std::string str2 = "loadThumbnail Success";
 	showResult(&str2, &str1);
@@ -753,6 +754,7 @@ void HelloWorld::Func(float dt){
 		if(pThumb != NULL){
 			CCTexture2D *tex = CCTextureCache::sharedTextureCache()->addUIImage(pThumb, "key_name");
 			pIcon = CCSprite::spriteWithTexture(tex);
+			pThumb->release() // declement reference count, lead to autorelease
 			pIcon->setPosition(ccp(100, size.height - 600));
 			this->addChild(pIcon, 0);
 		}

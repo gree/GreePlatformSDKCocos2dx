@@ -86,6 +86,13 @@ CCGreePayment* CCGreePayment::create(const char *message, CCArray *items){
 	if(obj != NULL){
 		payment = new CCGreePayment((void*)obj);
 		payment->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		payment->retain();
 	}
 	return payment;
 }

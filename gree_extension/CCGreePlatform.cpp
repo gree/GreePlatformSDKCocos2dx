@@ -27,6 +27,14 @@ CCGreeUser *CCGreePlatform::getLocalUser(){
 	jobject user;
 	user = getLocalUserJni();
 	CCGreeUser *greeUser = new CCGreeUser(user);
+	greeUser->autorelease();
+	//TODO : Want to remove retain().
+	//       But in such case, developer have to issue retain() by himself to use
+	//       object outside the function where it has gotten
+	//       Furthermore some of current callbacks are including correspoding 
+	//       object information and to get them developer also have to issue retain()
+	//       not to be automatically released.
+	greeUser->retain();
 	return greeUser;	
 }
 

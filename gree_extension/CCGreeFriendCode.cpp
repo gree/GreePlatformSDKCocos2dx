@@ -65,6 +65,13 @@ void CCGreeFriendCode::handleLoadCodeOnSuccess(void* code){
 	if(delegate != NULL){
 		CCGreeCode *pCode = new CCGreeCode(code);
 		pCode->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		pCode->retain();
 		delegate->loadCodeSuccess(pCode);
 	}
 }
@@ -82,7 +89,14 @@ void CCGreeFriendCode::handleRequestCodeOnSuccess(void* code){
 	CCGreeFriendCodeDelegate *delegate = CCGreePlatform::getFriendCodeDelegate();
 	if(delegate != NULL){
 		CCGreeCode *pCode = new CCGreeCode(code);
-		//code->autorelease();
+		pCode->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		pCode->retain();
 		delegate->requestCodeSuccess(pCode);
 	}
 }
@@ -133,6 +147,13 @@ void CCGreeFriendCode::handleLoadFriendIdsOnSuccess(int startIndex, int itemsPer
 	for(int i = 0; i < totalResults; i++){
 		CCGreeData *data = new CCGreeData(entries[i]);
 		data->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		data->retain();
 		dataArray->addObject(data);
 	}
 	CCGreeFriendCodeDelegate *delegate = CCGreePlatform::getFriendCodeDelegate();
@@ -155,6 +176,13 @@ void CCGreeFriendCode::handleLoadOwnerOnSuccess(void* owner){
 	if(owner != NULL){
 		data = new CCGreeData(owner);
 		data->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//       Furthermore some of current callbacks are including correspoding 
+		//       object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		data->retain();
 	}
 	CCGreeFriendCodeDelegate *delegate = CCGreePlatform::getFriendCodeDelegate();
 	if(delegate != NULL){

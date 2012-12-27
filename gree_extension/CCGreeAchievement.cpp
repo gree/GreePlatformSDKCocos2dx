@@ -94,6 +94,7 @@ CCImage *CCGreeAchievement::getIcon(){
 	}
 	if(width != 0 && height != 0 && parr != NULL){
 		img = new CCImage();
+		img->autorelease();
 		img->initWithImageData((void*)parr, width * height * 4, CCImage::kFmtRawData, width, height);
 		free(parr);
 	}
@@ -114,7 +115,9 @@ void CCGreeAchievement::handleLoadAchievementsOnSuccess(int index, int count, vo
 {
 	CCArray *elementArray = new CCArray();
 	for(int i = 0; i < count; i++){
-		elementArray->addObject(new CCGreeAchievement(elements[i]));	
+		CCGreeAchievement *achieve = new CCGreeAchievement(elements[i]);
+		achieve->autorelease();
+		elementArray->addObject(achieve);
 	}
 	CCGreeAchievementDelegate *delegate = CCGreePlatform::getAchievementDelegate();
 	if(delegate != NULL){

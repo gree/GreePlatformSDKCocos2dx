@@ -145,6 +145,7 @@ void CCGreeUser::loadUserWithId(const char *pid)
 // Callback Handling
 void CCGreeUser::handleLoadThumbnailOnSuccess(int *arr, int width, int height){
 	CCImage* img = new CCImage();
+	img->autorelease();
 	img->initWithImageData((void *)arr, width * height * 4, CCImage::kFmtRawData, width, height);
 	CCGreeUserDelegate *delegate = CCGreePlatform::getUserDelegate();
 	if(delegate != NULL){
@@ -191,7 +192,16 @@ void CCGreeUser::handleLoadUserWithIdOnSuccess(int index, int count, void **user
 {
 	CCArray *userArray = new CCArray();
 	for(int i = 0; i < count; i++){
-		userArray->addObject(new CCGreeUser(users[i]));
+		CCGreeUser *user = new CCGreeUser(users[i]);
+		user->autorelease();
+		//TODO : Want to remove retain().
+		//       But in such case, developer have to issue retain() by himself to use
+		//       object outside the function where it has gotten
+		//		 Furthermore some of current callbacks are including correspoding 
+		//		 object information and to get them developer also have to issue retain()
+		//       not to be automatically released.
+		user->retain();
+		userArray->addObject(user);
 	}
 	CCGreeUserDelegate *delegate = CCGreePlatform::getUserDelegate();
 	if(delegate != NULL){
