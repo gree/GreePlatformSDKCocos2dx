@@ -8,6 +8,7 @@ EXTENSIONDIR="./gree_extension"
 EXTENSIONJAVADIR="./gree"
 PATCHDIR="./patches"
 PROJECT_CREATE_SCRIPT="create-android-gree-project.sh"
+INSTALL_GREE_TEMPLATE_SCRIPT="install-gree-templates-xcode.sh"
 
 JAVADIR=${TARGET}"/cocos2dx/platform/android/java/src/org/cocos2dx/lib"
 
@@ -28,9 +29,12 @@ fi
 rsync -a --delete ${EXTENSIONDIR} ${TARGET}
 rsync -a --delete ${EXTENSIONJAVADIR} ${JAVADIR}
 rsync -a --delete ${PATCHDIR}/GreeBasicSample ${TARGET}/samples/
+rsync -a ${PATCHDIR}/template/xcode4 ${TARGET}/template/
 
 cp ${PATCHDIR}/${PROJECT_CREATE_SCRIPT} ${TARGET}
+cp ${PATCHDIR}/${INSTALL_GREE_TEMPLATE_SCRIPT} ${TARGET}
 
+echo "Apply patch for gree_extension"
 patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.patch
 
 echo "Finish Setup"

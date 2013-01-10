@@ -9,7 +9,7 @@ LOCAL_STATIC_LIBRARIES="LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocosden
 MODULES_TO_CALL="\$(call import-module,CocosDenshion/android) \\
 \$(call import-module,cocos2dx) \\
 \$(call import-module,extensions) \\
-\$(call import-module,gree_extension)"
+\$(call import-module,gree_extension/android)"
 
 LOCAL_SRC_FILES="LOCAL_SRC_FILES := hellogreecpp/main.cpp \\
                    ../../Classes/AppDelegate.cpp \\

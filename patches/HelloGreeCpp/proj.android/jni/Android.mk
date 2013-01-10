@@ -17,5 +17,5 @@ LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static cocos_gree_extension_static
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,cocos2dx)
-$(call import-module,gree_extension)
+$(call import-module,gree_extension/android)
 
