@@ -34,6 +34,7 @@ You can modify create-android-gree-project.sh or you can specify with Environmen
 # install Xcode template(for iOS):
 Under cocos2dx top directory, please execute install-gree-templates-xcode.sh with root permission,
 and you can select cocos2dx gree_extension template from Xcode.
+
 	$cd ./cocos2d-2.0-x-2.0.4
 	$sudo ./install-gree-templates-xcode.sh
 
