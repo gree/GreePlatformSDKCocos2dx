@@ -754,7 +754,7 @@ void HelloWorld::Func(float dt){
 		if(pThumb != NULL){
 			CCTexture2D *tex = CCTextureCache::sharedTextureCache()->addUIImage(pThumb, "key_name");
 			pIcon = CCSprite::spriteWithTexture(tex);
-			pThumb->release() // declement reference count, lead to autorelease
+			pThumb->release(); // declement reference count, lead to autorelease
 			pIcon->setPosition(ccp(100, size.height - 600));
 			this->addChild(pIcon, 0);
 		}
