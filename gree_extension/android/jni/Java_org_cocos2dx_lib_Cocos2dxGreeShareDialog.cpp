@@ -3,7 +3,9 @@
 #include <jni.h>
 
 #include "CCDirector.h"
+#include "platform/CCImage.h"
 
+#include "CCGreeShareDialog.h"
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace cocos2d;
@@ -53,11 +55,60 @@ extern "C" {
 		}
 	}
 
+	static jobject createDefaultBitmapObject(CCImage *img){
+		if(img == NULL){
+			return NULL;
+		}
+		unsigned short width = img->getWidth();
+		unsigned short height = img->getHeight();
+		//int len = img->getDataLen();
+		if(width == 0 || height == 0){
+			return NULL;
+		}
+		int *pSrc = (int*)(img->getData());
+		if(pSrc == NULL){
+			return NULL;
+		}
+
+		//convert ABGR -> ARGB
+		for(int i = 0; i < width * height; i++){
+			unsigned int colorData = *((unsigned int *)pSrc + i);
+										*((unsigned int*)pSrc + i) = ((colorData & 0xff00ff00) |
+										((colorData & 0x00ff0000) >> 16) |
+										((colorData & 0x000000ff) << 16));
+		}
+
+		//generate Bitmap object
+		JniMethodInfo b;
+		jobject config = NULL, bmpObj = NULL;
+		if(JniHelper::getStaticMethodInfo(b, "android.graphics.Bitmap$Config", "nativeToConfig", "(I)Landroid/graphics/Bitmap$Config;")){
+			config = b.env->CallStaticObjectMethod(b.classID, b.methodID, (6));
+			b.env->DeleteLocalRef(b.classID);
+			if(config == NULL){
+				return NULL;
+			}
+
+			if(JniHelper::getStaticMethodInfo(b, "android.graphics.Bitmap", "createBitmap", "([IIILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;")){
+				jintArray array = b.env->NewIntArray(width * height);
+				b.env->SetIntArrayRegion(array, 0, width * height, pSrc);
+				bmpObj = b.env->CallStaticObjectMethod(b.classID, b.methodID, array, width, height, config);
+				//Clear intarray
+				b.env->DeleteLocalRef(array);
+				b.env->DeleteLocalRef(b.classID);
+				if(bmpObj == NULL){
+					return NULL;
+				}
+			}
+		}
+		return bmpObj;
+	}
+
 	void setShareDialogParamsJni(jobject obj, CCDictionary *params){
 		JniMethodInfo t;
 		if(params == NULL){
 			return;
 		}
+
 		if(JniHelper::getMethodInfo(t, "java/util/TreeMap", "<init>", "()V")){
 			jobject map = t.env->NewObject(t.classID, t.methodID);
 			if(map == NULL){
@@ -70,24 +121,41 @@ extern "C" {
 				CCDICT_FOREACH(params, pElement){
 					const std::string str = pElement->getStrKey();
 					const char *pStr = str.c_str();
-					const char *pVal  = ((CCString *)(pElement->getObject()))->getCString();
-					jstring jStr, jVal;
-					if(!pStr){
-						jStr = t.env->NewStringUTF("");
+					if(!strncmp(GD_SHARE_DIALOG_PARAM_KEY_IMG, pStr, sizeof(GD_SHARE_DIALOG_PARAM_KEY_IMG))){
+						// CCimage
+						CCImage* img = ((CCImage *)(pElement->getObject()));
+						jobject bmpObj = createDefaultBitmapObject(img);
+						if(bmpObj == NULL){
+							return;
+						}
+						jstring jStr;
+						if(!pStr){
+							jStr = t.env->NewStringUTF("");
+						}else{
+							jStr = t.env->NewStringUTF(pStr);
+						}
+						m.env->CallObjectMethod(map, m.methodID, jStr, bmpObj);
+						m.env->DeleteLocalRef(jStr);
 					}else{
-						jStr = t.env->NewStringUTF(pStr);
+						// String
+						const char *pVal  = ((CCString *)(pElement->getObject()))->getCString();
+						jstring jStr, jVal;
+						if(!pStr){
+							jStr = t.env->NewStringUTF("");
+						}else{
+							jStr = t.env->NewStringUTF(pStr);
+						}
+						if(!pVal){
+							jVal = t.env->NewStringUTF("");
+						}else{
+							jVal = t.env->NewStringUTF(pVal);
+						}
+						m.env->CallObjectMethod(map, m.methodID, jStr, jVal);
+						m.env->DeleteLocalRef(jStr);
+						m.env->DeleteLocalRef(jVal);
 					}
-					if(!pVal){
-						jVal = t.env->NewStringUTF("");
-					}else{
-						jVal = t.env->NewStringUTF(pVal);
-					}
-					m.env->CallObjectMethod(map, m.methodID, jStr, jVal);
-					m.env->DeleteLocalRef(jStr);
-					m.env->DeleteLocalRef(jVal);
 				}
 				m.env->DeleteLocalRef(m.classID);
-			
 
 				JniMethodInfo l;
 				if(GreeJniHelper::getInstanceMethodInfo(l, obj, "setParams", "(Ljava/util/TreeMap;)V")){
