@@ -401,7 +401,10 @@ void HelloWorld::authorizeAuthorized(){
 		CCLog("+++++++++++++++++ Error ++++++++++");
 	}else{
 		CCDictionary *dict = CCDictionary::create();
-		dict->setObject(new CCString("1000038120"), GD_INVITE_DIALOG_PARAM_KEY_TOUSERID);
+        CCArray *array = new CCArray();
+        array->addObject(new CCString("1000038120"));
+        array->addObject(new CCString("1000038121"));
+        dict->setObject(array, GD_INVITE_DIALOG_PARAM_KEY_TOUSERID);
 		dict->setObject(new CCString("TestInviteBody"), GD_INVITE_DIALOG_PARAM_KEY_BODY);
 		dialog1->setParams(dict);
 		dialog1->show();

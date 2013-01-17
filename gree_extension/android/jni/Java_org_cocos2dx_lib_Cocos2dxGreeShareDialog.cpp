@@ -121,39 +121,41 @@ extern "C" {
 				CCDICT_FOREACH(params, pElement){
 					const std::string str = pElement->getStrKey();
 					const char *pStr = str.c_str();
+					jstring jStr;
+					if(!pStr){
+						jStr = t.env->NewStringUTF("");
+					}else{
+						jStr = t.env->NewStringUTF(pStr);
+					}
 					if(!strncmp(GD_SHARE_DIALOG_PARAM_KEY_IMG, pStr, sizeof(GD_SHARE_DIALOG_PARAM_KEY_IMG))){
 						// CCimage
 						CCImage* img = ((CCImage *)(pElement->getObject()));
+						if(img == NULL){
+							return;
+						}
 						jobject bmpObj = createDefaultBitmapObject(img);
 						if(bmpObj == NULL){
 							return;
 						}
-						jstring jStr;
-						if(!pStr){
-							jStr = t.env->NewStringUTF("");
-						}else{
-							jStr = t.env->NewStringUTF(pStr);
-						}
 						m.env->CallObjectMethod(map, m.methodID, jStr, bmpObj);
-						m.env->DeleteLocalRef(jStr);
 					}else{
 						// String
-						const char *pVal  = ((CCString *)(pElement->getObject()))->getCString();
-						jstring jStr, jVal;
-						if(!pStr){
-							jStr = t.env->NewStringUTF("");
-						}else{
-							jStr = t.env->NewStringUTF(pStr);
+						CCString *val = ((CCString *)(pElement->getObject()));
+						if(val == NULL){
+							return;
 						}
+						const char *pVal = val->getCString();
+						//const char *pVal  = ((CCString *)(pElement->getObject()))->getCString();
+						jstring jVal;
 						if(!pVal){
 							jVal = t.env->NewStringUTF("");
 						}else{
 							jVal = t.env->NewStringUTF(pVal);
 						}
 						m.env->CallObjectMethod(map, m.methodID, jStr, jVal);
-						m.env->DeleteLocalRef(jStr);
 						m.env->DeleteLocalRef(jVal);
 					}
+					m.env->DeleteLocalRef(jStr);
 				}
 				m.env->DeleteLocalRef(m.classID);
 

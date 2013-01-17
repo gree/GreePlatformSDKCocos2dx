@@ -8,8 +8,8 @@
 #include "GreeExtensionMacros.h"
 
 // for setParams
-#define GD_INVITE_DIALOG_PARAM_KEY_BODY  "body"
-#define GD_INVITE_DIALOG_PARAM_KEY_TOUSERID "to_user_id"
+#define GD_INVITE_DIALOG_PARAM_KEY_BODY  "body" // to be set with CCStinrg
+#define GD_INVITE_DIALOG_PARAM_KEY_TOUSERID "to_user_id" // to be set with CCArray that is including CCString
 
 
 using namespace std;

@@ -8,8 +8,8 @@
 #include "GreeExtensionMacros.h"
 
 // setParams
-#define GD_SHARE_DIALOG_PARAM_KEY_MESSAGE "message"
-#define GD_SHARE_DIALOG_PARAM_KEY_IMG     "image"
+#define GD_SHARE_DIALOG_PARAM_KEY_MESSAGE "message" // to be set with CCString
+#define GD_SHARE_DIALOG_PARAM_KEY_IMG     "image" // to be set with CCImage
 
 using namespace std;
 
