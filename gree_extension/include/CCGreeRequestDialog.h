@@ -8,12 +8,15 @@
 #include "GreeExtensionMacros.h"
 
 // setParams
-#define GD_REQUEST_DIALOG_PARAM_KEY_TITLE "title"
-#define GD_REQUEST_DIALOG_PARAM_KEY_BODY  "body"
-#define GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE "list_type"
-#define GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID "to_user_id"
-#define GD_REQUEST_DIALOG_PARAM_KEY_EXPIRETIME "expire_time"
-#define GD_REQUEST_DIALOG_PARAM_KEY_ATTRS "attrs"
+#define GD_REQUEST_DIALOG_PARAM_KEY_TITLE "title" // to be set with CCString
+#define GD_REQUEST_DIALOG_PARAM_KEY_BODY  "body"  // to be set with CCString
+#define GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE "list_type" // to be set with CCString including GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_ALL, GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_JOINED, GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_SPECIFIED
+#define GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_ALL       "all"
+#define GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_JOINED    "joined"
+#define GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE_SPECIFIED "specified"
+#define GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID "to_user_id"  // to be set with CCArray that is including CCString
+#define GD_REQUEST_DIALOG_PARAM_KEY_EXPIRETIME "expire_time" // to be set with CCString
+#define GD_REQUEST_DIALOG_PARAM_KEY_ATTRS "attrs" // to be set with CCDictionary
 
 using namespace std;
 

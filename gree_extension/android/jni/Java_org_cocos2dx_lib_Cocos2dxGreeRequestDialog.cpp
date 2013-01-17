@@ -4,6 +4,7 @@
 
 #include "CCDirector.h"
 
+#include "CCGreeRequestDialog.h"
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace cocos2d;
@@ -70,21 +71,61 @@ extern "C" {
 				CCDICT_FOREACH(params, pElement){
 					const std::string str = pElement->getStrKey();
 					const char *pStr = str.c_str();
-					const char *pVal  = ((CCString *)(pElement->getObject()))->getCString();
-					jstring jStr, jVal;
+					jstring jStr;
 					if(!pStr){
 						jStr = t.env->NewStringUTF("");
 					}else{
 						jStr = t.env->NewStringUTF(pStr);
 					}
-					if(!pVal){
-						jVal = t.env->NewStringUTF("");
-					}else{
-						jVal = t.env->NewStringUTF(pVal);
+					if(!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_TITLE, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_TITLE)) || 
+						!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_BODY, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_BODY)) ||
+						!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_LISTTYPE)) ||
+						!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_EXPIRETIME, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_EXPIRETIME))){
+						// title, body, list_type, expire_time
+						CCString *val = ((CCString *)(pElement->getObject()));
+						if(val == NULL){
+							return;
+						}
+						const char *pVal  = val->getCString();
+						jstring jVal;
+						if(!pVal){
+							jVal = t.env->NewStringUTF("");
+						}else{
+							jVal = t.env->NewStringUTF(pVal);
+						}
+						m.env->CallObjectMethod(map, m.methodID, jStr, jVal);
+						m.env->DeleteLocalRef(jVal);
+					}else if(!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID))){
+						//touserid
+						CCArray *array = ((CCArray *)(pElement->getObject()));
+						if(array == NULL){
+							return;
+						}
+						jclass jcl = JniHelper::getClassID("java/lang/String");
+						if(jcl == NULL){
+							return;
+						}
+						jobjectArray jarry = t.env->NewObjectArray(array->count(), jcl, NULL);
+						CCObject *it;
+						int i = 0;
+						CCARRAY_FOREACH(array, it){
+							CCString *val = dynamic_cast<CCString *>(it);
+							const char *pVal = val->getCString();
+							jstring jVal;
+							if(!pVal){
+								jVal = t.env->NewStringUTF("");
+							}else{
+								jVal = t.env->NewStringUTF(pVal);
+							}
+							t.env->SetObjectArrayElement(jarry, i, jVal);
+							t.env->DeleteLocalRef(jVal);
+							i++;
+						}
+						m.env->CallObjectMethod(map, m.methodID, jStr, jarry);
+						t.env->DeleteLocalRef(jarry);
+					}else if(!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_ATTRS, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_ATTRS))){
 					}
-					m.env->CallObjectMethod(map, m.methodID, jStr, jVal);
 					m.env->DeleteLocalRef(jStr);
-					m.env->DeleteLocalRef(jVal);
 				}
 				m.env->DeleteLocalRef(m.classID);
 			
