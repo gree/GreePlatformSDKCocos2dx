@@ -8,4 +8,7 @@
 
 }
 
+/** GreePlatformDispatcher singleton */
++(GreePlatformDispatcher *) sharedGreePlatformDispatcher;
+
 @end

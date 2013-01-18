@@ -5,7 +5,7 @@
 
 static GreePlatformDispatcher* s_pGreePlatformDispatcher;
 
-+(id) sharedGreePlatformDispatcher
++(GreePlatformDispatcher*) sharedGreePlatformDispatcher
 {
     if(s_pGreePlatformDispatcher == nil){
         s_pGreePlatformDispatcher = [[self alloc] init];
@@ -18,9 +18,9 @@ static GreePlatformDispatcher* s_pGreePlatformDispatcher;
 {
     // Initialize GreePlatformSDK
     NSDictionary* settings = [NSDictionary dictionaryWithObjectsAndKeys : GreeDevelopmentModeSandbox, GreeSettingDevelopmentMode, nil];
-    
+
     [GreePlatform initializeWithApplicationId : @"xxxxx" consumerKey : @"xxxxxxxxxx" consumerSecret : @"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"  settings : settings delegate : self ];
-    
+
     return self;
 }
 

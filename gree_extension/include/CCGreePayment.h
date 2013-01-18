@@ -6,7 +6,7 @@
 #include "GreeExtensionMacros.h"
 
 #include "cocoa/CCString.h"
-
+#include "cocoa/CCArray.h"
 
 NS_CC_GREE_EXT_BEGIN 
 

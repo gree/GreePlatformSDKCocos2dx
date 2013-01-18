@@ -1,6 +1,7 @@
 #import "GreePlatformDispatcher.h"
 #import "GreePlatform.h"
 
+#import "GreePlatformDispatcher.h"
 #import "CCGreeAuthorizer.h"
 #import "CCGreePlatform.h"
 
@@ -16,6 +17,8 @@ void CCGreeAuthorizer::authorize(){
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		if(error){
 			NSLog(@"Authorization failed: %@.", [error localizedDescription]);
+            CCGreeAuthorizer::handleOnAuthorizeError();
+            return;
 		}
 		if(localUser){
 		NSLog(@"Authorization finished with local user:%@.", localUser);
@@ -31,6 +34,7 @@ void CCGreeAuthorizer::logout(){
         NSLog(@"Logouted %s", __FUNCTION__);
         if(error){
             NSLog(@"RevokeAuthorization failed: %@.", [error localizedDescription]);
+            CCGreeAuthorizer::handleOnLogoutError();
         }
     }];
     }
@@ -65,11 +69,27 @@ void CCGreeAuthorizer::handleOnAuthorized(){
     }
 }
 
+void CCGreeAuthorizer::handleOnAuthorizeError(){
+    NSLog(@"handleOnAuthorizeError()");
+    CCGreeAuthorizerDelegate *delegate = CCGreePlatform::getAuthorizerDelegate();
+    if(delegate != NULL){
+        delegate->authorizeError();
+    }
+}
+
 void CCGreeAuthorizer::handleOnLogouted(){
     NSLog(@"handleOnLogouted()");
     CCGreeAuthorizerDelegate *delegate = CCGreePlatform::getAuthorizerDelegate();
     if(delegate != NULL){
         delegate->logoutLogouted();
+    }
+}
+
+void CCGreeAuthorizer::handleOnLogoutError(){
+    NSLog(@"handleOnLogoutError()");
+    CCGreeAuthorizerDelegate *delegate = CCGreePlatform::getAuthorizerDelegate();
+    if(delegate != NULL){
+        delegate->logoutError();
     }
 }
 

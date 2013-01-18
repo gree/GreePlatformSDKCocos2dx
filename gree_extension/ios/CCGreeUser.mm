@@ -181,6 +181,13 @@ bool CCGreeUser::loadThumbnail(int size){
     bool ret = false;
     if(mGreeUser){
         [(GreeUser *)mGreeUser loadThumbnailWithSize:GreeUserThumbnailSizeLarge block:^(UIImage *icon, NSError *error){
+            if(error != nil){
+                CCGreeUserDelegate *delegate = CCGreePlatform::getUserDelegate();
+                if(delegate != NULL){
+                    delegate->loadThumbnailFailure(this, [error code], new CCString([[error description] UTF8String]));
+                }
+                return;
+            }
             CGImageRef imageRef = icon.CGImage;
             NSUInteger width = CGImageGetWidth(imageRef);
             NSUInteger height = CGImageGetHeight(imageRef);
@@ -215,6 +222,13 @@ void CCGreeUser::loadFriends(int offset, int count){
         id<GreeCountableEnumerator> enumerator = [user loadFriendsWithBlock : nil];
         [enumerator setStartIndex : offset];
         [enumerator loadNext : ^(NSArray* items, NSError* error){
+            if(error != nil){
+                CCGreeUserDelegate *delegate = CCGreePlatform::getUserDelegate();
+                if(delegate != NULL){
+                    delegate->loadFriendsFailure(this, [error code], new CCString([[error description] UTF8String]));
+                }
+                return;
+            }
             int loadCount = [items count];
             CCArray *userArray = new CCArray();
             for(int i = 0; i < ((loadCount >= count) ? count : loadCount); i++){
