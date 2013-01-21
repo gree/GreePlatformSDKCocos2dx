@@ -192,6 +192,28 @@
 			<key>Path</key>
 			<string>libs/gree_extension/ios/CCGreeAuthorizer.mm</string>
 		</dict>
+		<key>libs/gree_extension/ios/CCGreeInviteDialog.mm</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>libs</string>
+				<string>gree_extension</string>
+				<string>ios</string>
+			</array>
+			<key>Path</key>
+			<string>libs/gree_extension/ios/CCGreeInviteDialog.mm</string>
+		</dict>
+		<key>libs/gree_extension/ios/CCGreePayment.mm</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>libs</string>
+				<string>gree_extension</string>
+				<string>ios</string>
+			</array>
+			<key>Path</key>
+			<string>libs/gree_extension/ios/CCGreePayment.mm</string>
+		</dict>
 		<key>libs/gree_extension/ios/CCGreePlatform.mm</key>
 		<dict>
 			<key>Group</key>
@@ -202,6 +224,17 @@
 			</array>
 			<key>Path</key>
 			<string>libs/gree_extension/ios/CCGreePlatform.mm</string>
+		</dict>
+		<key>libs/gree_extension/ios/CCGreeShareDialog.mm</key>
+		<dict>
+			<key>Group</key>
+			<array>
+				<string>libs</string>
+				<string>gree_extension</string>
+				<string>ios</string>
+			</array>
+			<key>Path</key>
+			<string>libs/gree_extension/ios/CCGreeShareDialog.mm</string>
 		</dict>
 		<key>libs/gree_extension/ios/CCGreeUser.mm</key>
 		<dict>
@@ -255,7 +288,10 @@
 		<string>libs/gree_extension/include/cocos-gree-ext.h</string>
 		<string>libs/gree_extension/include/GreeExtensionMacros.h</string>
 		<string>libs/gree_extension/ios/CCGreeAuthorizer.mm</string>
+		<string>libs/gree_extension/ios/CCGreeInviteDialog.mm</string>
+		<string>libs/gree_extension/ios/CCGreePayment.mm</string>
 		<string>libs/gree_extension/ios/CCGreePlatform.mm</string>
+		<string>libs/gree_extension/ios/CCGreeShareDialog.mm</string>
 		<string>libs/gree_extension/ios/CCGreeUser.mm</string>
 		<string>libs/gree_extension/ios/GreePlatformDispatcher.h</string>
 		<string>libs/gree_extension/ios/GreePlatformDispatcher.mm</string>
