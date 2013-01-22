@@ -12,6 +12,8 @@ CCGreePaymentDelegate     *CCGreePlatform::s_pPaymentDelegate = NULL;
 CCGreeAuthorizerDelegate  *CCGreePlatform::s_pAuthorizerDelegate = NULL;
 //CCGreeLeaderboardDelegate *CCGreePlatform::s_pLeaderboardDelegate = NULL;
 //CCGreeFriendCodeDelegate  *CCGreePlatform::s_pFriendCodeDelegate = NULL;
+CCGreeShareDialogDelegate *CCGreePlatform::s_pShareDialogDelegate = NULL;
+CCGreeInviteDialogDelegate *CCGreePlatform::s_pInviteDialogDelegate = NULL;
 
 
 CCString *CCGreePlatform::getLocalUserId(){
