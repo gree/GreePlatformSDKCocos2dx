@@ -65,7 +65,7 @@ jobject createInviteDialogJni_(){
 		return ret;
 	}
 
-
+#if 0 // Obsolete
 	void setInviteDialogHandlerJni(jobject obj){
 		JniMethodInfo t;
 		if(GreeJniHelper::getInstanceMethodInfo(t, obj, "setHandler", "(Landroid/os/Handler;)V")){
@@ -79,6 +79,18 @@ jobject createInviteDialogJni_(){
 				h.env->DeleteLocalRef(h.classID);
 				t.env->CallVoidMethod(obj, t.methodID, handler);
 			}
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
+#endif
+
+	void setInviteDialogHandlerJni(jobject obj, void* delegate){
+		JniMethodInfo t;
+		if(JniHelper::getStaticMethodInfo(t, "org/cocos2dx/lib/gree/NativeThreadHelper", "setHandler", "(Landroid/content/Context;Ljava/lang/Object;Ljava/lang/String;J)V")){
+			jobject context = getPlatformContext();
+			jstring dialogType = t.env->NewStringUTF("InviteDialog");
+			t.env->CallStaticVoidMethod(t.classID, t.methodID, context, obj, dialogType, delegate);
+			t.env->DeleteLocalRef(dialogType);
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
@@ -168,7 +180,6 @@ jobject createInviteDialogJni_(){
 
 	void showInviteDialogJni(jobject obj){
 		JniMethodInfo t;
-
 		if(JniHelper::getStaticMethodInfo(t, "org/cocos2dx/lib/gree/NativeThreadHelper", "showDialog", "(Ljava/lang/Object;Ljava/lang/String;)V")){
 			jstring dialogType = t.env->NewStringUTF("InviteDialog");
 			t.env->CallStaticVoidMethod(t.classID, t.methodID, obj, dialogType);

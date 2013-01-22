@@ -6,7 +6,7 @@
 #include "GreeExtensionMacros.h"
 
 #include "cocoa/CCString.h"
-#include "cocoa/CCArray.h"
+
 
 NS_CC_GREE_EXT_BEGIN 
 
@@ -18,6 +18,7 @@ class CCGreePaymentDelegate {
 		virtual void paymentRequestSuccess(CCGreePayment *payment, int responseCode, CCString* paymentId){};
 		virtual void paymentRequestCancel(CCGreePayment *payment, int responseCode, CCString* paymentId){};
 		virtual void paymentRequestFailure(CCGreePayment *payment, int responseCode, CCString *paymentId, CCString *response){};
+		virtual void paymentRequestOpened(CCGreePayment *payment){};
 		virtual void paymentVerifySuccess(int responseCode, CCString* paymentId){};
 		virtual void paymentVerifyCancel(int responseCode, CCString* paymentId){};
 		virtual void paymentVerifyFailure(int responseCode, CCString *paymentId, CCString *response){};
@@ -59,6 +60,7 @@ class CCGreePayment : public CCObject
 		void handlePaymentRequestOnSuccess(int responseCode, const char* paymentId);
 		void handlePaymentRequestOnCancel(int responseCode, const char* paymentId);
 		void handlePaymentRequestOnFailure(int responseCode, const char* paymentId, const char* response);
+		void handleDialogOpened(void);
 		static void handlePaymentVerifyOnSuccess(int responseCode, const char* paymentId);
 		static void handlePaymentVerifyOnCancel(int responseCode, const char* paymentId);
 		static void handlePaymentVerifyOnFailure(int responseCode, const char* paymentId, const char* response);

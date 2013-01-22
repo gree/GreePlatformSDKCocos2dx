@@ -8,6 +8,9 @@
 #include "CCGreeAchievement.h"
 #include "CCGreeLeaderboard.h"
 #include "CCGreeFriendCode.h"
+#include "CCGreeInviteDialog.h"
+#include "CCGreeShareDialog.h"
+#include "CCGreeRequestDialog.h"
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 
 using namespace std;
@@ -544,7 +547,6 @@ extern "C" {
 		env->ReleaseStringUTFChars(response, str);
 	}
 
-
 	// from NativeEntryListGetListener
 	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeEntryListGetListener_nativeEntryListGetListenerOnSuccess(JNIEnv *env, jobject obj, jint startIndex, jint itemsPerPage, jint totalResults, jobjectArray entries){
 		//int size = env->GetArrayLength(entries);
@@ -573,6 +575,116 @@ extern "C" {
 		const char* str = env->GetStringUTFChars(response, 0);
 		CCGreeFriendCode::handleLoadOwnerOnFailure(responseCode, str);	
 		env->ReleaseStringUTFChars(response, str);
+	}
+
+	// from NativeInviteDialogHandler
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeInviteDialogHandler_nativeInviteDialogOpened(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeInviteDialog *dialog = (CCGreeInviteDialog*)delegate;
+			dialog->handleDialogOpened();
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeInviteDialogHandler_nativeInviteDialogCompleted(JNIEnv *env, jobject obj, jlong delegate, jint count, jobjectArray users){
+		if(delegate){
+        jstring *pArr = (jstring*)malloc(sizeof(jstring) * count);
+        const char **pStrArr = (const char**)malloc(sizeof(char*) * count);
+        if(pArr != NULL && pStrArr != NULL){
+            for(int i = 0; i < count; i++){
+                pArr[i] = (jstring)env->GetObjectArrayElement(users, i);
+                pStrArr[i] = env->GetStringUTFChars(pArr[i], 0);
+            }
+			CCGreeInviteDialog *dialog = (CCGreeInviteDialog*)delegate;
+			dialog->handleDialogCompleted(count, pStrArr);
+            for(int i = 0; i < count; i++){
+                env->ReleaseStringUTFChars(pArr[i], pStrArr[i]);
+                env->DeleteLocalRef(pArr[i]);
+            }
+        }
+        if(pArr != NULL){
+            free(pArr);
+        }
+        if(pStrArr != NULL){
+            free(pStrArr);
+        }
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeInviteDialogHandler_nativeInviteDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeInviteDialog *dialog = (CCGreeInviteDialog*)delegate;
+			dialog->handleDialogCanceled();
+		}
+	}
+
+	// from NativeShareDialogHandler
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeShareDialogHandler_nativeShareDialogOpened(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeShareDialog *dialog = (CCGreeShareDialog*)delegate;
+			dialog->handleDialogOpened();
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeShareDialogHandler_nativeShareDialogCompleted(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeShareDialog *dialog = (CCGreeShareDialog*)delegate;
+			dialog->handleDialogCompleted(0, (const char**)NULL);
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeShareDialogHandler_nativeShareDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeShareDialog *dialog = (CCGreeShareDialog*)delegate;
+			dialog->handleDialogCanceled();
+		}
+	}
+
+	// from NativeRequestDialogHandler
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeRequestDialogHandler_nativeRequestDialogOpened(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeRequestDialog *dialog = (CCGreeRequestDialog*)delegate;
+			dialog->handleDialogOpened();
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeRequestDialogHandler_nativeRequestDialogCompleted(JNIEnv *env, jobject obj, jlong delegate, jint count, jobjectArray users){
+		if(delegate){
+        jstring *pArr = (jstring*)malloc(sizeof(jstring) * count);
+        const char **pStrArr = (const char**)malloc(sizeof(char*) * count);
+        if(pArr != NULL && pStrArr != NULL){
+            for(int i = 0; i < count; i++){
+                pArr[i] = (jstring)env->GetObjectArrayElement(users, i);
+                pStrArr[i] = env->GetStringUTFChars(pArr[i], 0);
+            }
+			CCGreeRequestDialog *dialog = (CCGreeRequestDialog*)delegate;
+			dialog->handleDialogCompleted(count, pStrArr);
+            for(int i = 0; i < count; i++){
+                env->ReleaseStringUTFChars(pArr[i], pStrArr[i]);
+                env->DeleteLocalRef(pArr[i]);
+            }
+        }
+        if(pArr != NULL){
+            free(pArr);
+        }
+        if(pStrArr != NULL){
+            free(pStrArr);
+        }
+		}
+	}
+
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeRequestDialogHandler_nativeRequestDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreeRequestDialog *dialog = (CCGreeRequestDialog*)delegate;
+			dialog->handleDialogCanceled();
+		}
+	}
+
+	// from NativePaymentHandler
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativePaymentHandler_nativePaymentDialogOpened(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreePayment *payment = (CCGreePayment*)delegate;
+			payment->handleDialogOpened();
+		}
 	}
 }
 

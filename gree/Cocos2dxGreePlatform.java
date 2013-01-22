@@ -9,7 +9,6 @@ import android.os.Handler;
 public class Cocos2dxGreePlatform {
 	private static final String TAG = Cocos2dxGreePlatform.class.getSimpleName();
 	private static Context sContext = null;
-	private static NativePaymentHandler sHandler = null;
 	private static Handler sLocalUIHandler = null;
 
 	public static native void nativeSetContext(Context pContext);
@@ -17,7 +16,6 @@ public class Cocos2dxGreePlatform {
 	public static void init(Context pContext){
 		setContext(pContext);
 		// Handler must be created on UI thread
-		sHandler = new NativePaymentHandler(pContext);
 		sLocalUIHandler = new Handler();
 	}
 

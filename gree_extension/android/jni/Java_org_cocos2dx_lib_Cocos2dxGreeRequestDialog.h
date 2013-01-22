@@ -9,7 +9,7 @@ extern "C"
 {
 	jobject createRequestDialogJni(void);
 
-	void setRequestDialogHandlerJni(jobject obj);
+	void setRequestDialogHandlerJni(jobject obj, void *delegate);
 	void setRequestDialogParamsJni(jobject obj, cocos2d::CCDictionary *params);
 	void showRequestDialogJni(jobject obj);
 }

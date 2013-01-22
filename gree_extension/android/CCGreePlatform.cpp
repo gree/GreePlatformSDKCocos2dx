@@ -14,6 +14,9 @@ CCGreeAchievementDelegate *CCGreePlatform::s_pAchievementDelegate = NULL;
 CCGreeAuthorizerDelegate  *CCGreePlatform::s_pAuthorizerDelegate = NULL;
 CCGreeLeaderboardDelegate *CCGreePlatform::s_pLeaderboardDelegate = NULL;
 CCGreeFriendCodeDelegate  *CCGreePlatform::s_pFriendCodeDelegate = NULL;
+CCGreeInviteDialogDelegate  *CCGreePlatform::s_pInviteDialogDelegate = NULL;
+CCGreeShareDialogDelegate   *CCGreePlatform::s_pShareDialogDelegate = NULL;
+CCGreeRequestDialogDelegate *CCGreePlatform::s_pRequestDialogDelegate = NULL;
 
 
 CCString *CCGreePlatform::getLocalUserId(){

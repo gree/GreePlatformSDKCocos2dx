@@ -22,12 +22,24 @@ using namespace std;
 
 NS_CC_GREE_EXT_BEGIN
 
-class CCGreeRequestDialog : CCObject {
+class CCGreeRequestDialog;
+
+class CCGreeRequestDialogDelegate {
+	public:
+		virtual void requestDialogOpened(CCGreeRequestDialog *dialog){};
+		virtual void requestDialogCompleted(CCGreeRequestDialog *dialog, CCArray *userArray){};
+		virtual void requestDialogCanceled(CCGreeRequestDialog *dialog){};
+};
+
+class CCGreeRequestDialog : public CCObject {
 	public:
 		static CCGreeRequestDialog* create();
 		void setParams(CCDictionary *params);
 		void show();
 
+		void handleDialogOpened();
+		void handleDialogCompleted(int count, const char** users);
+		void handleDialogCanceled();
 	private:
 		CCGreeRequestDialog(void* obj);
 		void* mRequestDialog;

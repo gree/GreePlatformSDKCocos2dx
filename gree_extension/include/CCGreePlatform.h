@@ -18,7 +18,16 @@
 
 NS_CC_GREE_EXT_BEGIN;
 
-class CCGreePlatformDelegate : public cocos2d::gree_extension::CCGreeAuthorizerDelegate, public cocos2d::gree_extension::CCGreePaymentDelegate, public cocos2d::gree_extension::CCGreeUserDelegate, public cocos2d::gree_extension::CCGreeAchievementDelegate, public cocos2d::gree_extension::CCGreeLeaderboardDelegate, public cocos2d::gree_extension::CCGreeFriendCodeDelegate
+
+#define CREATE_DELEGATE(module) \
+	public: \
+		static void set##module(CCGree##module *pDelegate) { s_p##module = pDelegate; } \
+		static CCGree##module *get##module() { return s_p##module; }; \
+		static void remove##module(CCGree##module *pDelegate) { s_p##module = NULL; } \
+	private: \
+		static CCGree##module *s_p##module;
+
+class CCGreePlatformDelegate : public cocos2d::gree_extension::CCGreeAuthorizerDelegate, public cocos2d::gree_extension::CCGreePaymentDelegate, public cocos2d::gree_extension::CCGreeUserDelegate, public cocos2d::gree_extension::CCGreeAchievementDelegate, public cocos2d::gree_extension::CCGreeLeaderboardDelegate, public cocos2d::gree_extension::CCGreeFriendCodeDelegate, public cocos2d::gree_extension::CCGreeInviteDialogDelegate, public cocos2d::gree_extension::CCGreeShareDialogDelegate, public cocos2d::gree_extension::CCGreeRequestDialogDelegate
 {
 };
 
@@ -57,7 +66,12 @@ class CCGreePlatform {
 		static CCGreeAuthorizerDelegate  *s_pAuthorizerDelegate;
 		static CCGreeLeaderboardDelegate *s_pLeaderboardDelegate;
 		static CCGreeFriendCodeDelegate  *s_pFriendCodeDelegate;
+		CREATE_DELEGATE(InviteDialogDelegate);
+		CREATE_DELEGATE(ShareDialogDelegate);
+		CREATE_DELEGATE(RequestDialogDelegate);
+
 };
+
 
 NS_CC_GREE_EXT_END
 

@@ -16,12 +16,24 @@ using namespace std;
 
 NS_CC_GREE_EXT_BEGIN
 
-class CCGreeInviteDialog : CCObject {
+class CCGreeInviteDialog;
+
+class CCGreeInviteDialogDelegate {
+	public:
+		virtual void inviteDialogOpened(CCGreeInviteDialog *dialog){};
+		virtual void inviteDialogCompleted(CCGreeInviteDialog *dialog, CCArray *userArray){};
+		virtual void inviteDialogCanceled(CCGreeInviteDialog *dialog){};
+};
+
+class CCGreeInviteDialog : public CCObject {
 	public:
 		static CCGreeInviteDialog* create();
 		void show();
 		void setParams(CCDictionary *params);
 
+		void handleDialogOpened();
+		void handleDialogCompleted(int count, const char** users);
+		void handleDialogCanceled();
 	private:
 		CCGreeInviteDialog(void* obj);
 		void* mInviteDialog;

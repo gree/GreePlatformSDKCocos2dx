@@ -208,7 +208,7 @@ static bool getEnv(JNIEnv **env){
 	}
 
 
-
+#if 0
 	void setPaymentHandlerJni(jobject obj, void *delegate){
 		//SetHandler
 		JniMethodInfo t;
@@ -224,6 +224,17 @@ static bool getEnv(JNIEnv **env){
 				k.env->DeleteLocalRef(k.classID);
 				t.env->DeleteLocalRef(t.classID);
 			}
+		}
+	}
+#endif
+	void setPaymentHandlerJni(jobject obj, void *delegate){
+		JniMethodInfo t;
+		if(JniHelper::getStaticMethodInfo(t, "org/cocos2dx/lib/gree/NativeThreadHelper", "setHandler", "(Landroid/content/Context;Ljava/lang/Object;Ljava/lang/String;J)V")){
+			jobject context = getPlatformContext();
+			jstring dialogType = t.env->NewStringUTF("PaymentDialog");
+			t.env->CallStaticVoidMethod(t.classID, t.methodID, context, obj, dialogType, delegate);
+			t.env->DeleteLocalRef(dialogType);
+			t.env->DeleteLocalRef(t.classID);
 		}
 	}
 

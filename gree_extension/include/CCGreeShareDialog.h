@@ -15,12 +15,24 @@ using namespace std;
 
 NS_CC_GREE_EXT_BEGIN
 
-class CCGreeShareDialog : CCObject {
+class CCGreeShareDialog;
+
+class CCGreeShareDialogDelegate {
+	public:
+		virtual void shareDialogOpened(CCGreeShareDialog *dialog){};
+		virtual void shareDialogCompleted(CCGreeShareDialog *dialog, CCArray *userArray){};
+		virtual void shareDialogCanceled(CCGreeShareDialog *dialog){};
+};
+
+class CCGreeShareDialog : public CCObject {
 	public:
 		static CCGreeShareDialog* create();
 		void setParams(CCDictionary *params);
 		void show();
 
+		void handleDialogOpened();
+		void handleDialogCompleted(int count, const char** users);
+		void handleDialogCanceled();
 	private:
 		CCGreeShareDialog(void* obj);
 		void* mShareDialog;

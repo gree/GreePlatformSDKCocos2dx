@@ -16,6 +16,7 @@ CCGreeShareDialog* CCGreeShareDialog::create(){
 	if(obj != NULL){
 		dialog = new CCGreeShareDialog((jobject)obj);
 		dialog->autorelease();
+		dialog->retain();
 	}
 	return dialog;
 }
@@ -29,11 +30,39 @@ void CCGreeShareDialog::setParams(CCDictionary *params){
 
 void CCGreeShareDialog::show(){
 	if(mShareDialog != NULL){
-		setShareDialogHandlerJni((jobject)mShareDialog);
+		setShareDialogHandlerJni((jobject)mShareDialog, (void*)this);
 		showShareDialogJni((jobject)mShareDialog);
 	}
 }
 
+void CCGreeShareDialog::handleDialogOpened(){
+	CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+	if(delegate != NULL){
+		delegate->shareDialogOpened(this);
+	}
+}
+
+void CCGreeShareDialog::handleDialogCompleted(int count, const char** users){
+	CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+	if(delegate != NULL){
+		CCArray *userStringArray = new CCArray();
+		if(users != NULL){
+			for(int i = 0; i < count; i++){
+				CCString *str = new CCString(users[i]);
+				str->autorelease();
+				userStringArray->addObject(str);
+			}
+		}
+		delegate->shareDialogCompleted(this, userStringArray);
+	}
+}
+
+void CCGreeShareDialog::handleDialogCanceled(){
+	CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+	if(delegate != NULL){
+		delegate->shareDialogCanceled(this);
+	}
+}
 
 NS_CC_GREE_EXT_END
 

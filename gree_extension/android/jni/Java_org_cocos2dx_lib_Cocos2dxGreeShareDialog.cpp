@@ -37,7 +37,7 @@ extern "C" {
 		return ret;
 	}
 
-
+#if 0 // Obsolete
 	void setShareDialogHandlerJni(jobject obj){
 		JniMethodInfo t;
 		if(GreeJniHelper::getInstanceMethodInfo(t, obj, "setHandler", "(Landroid/os/Handler;)V")){
@@ -51,6 +51,17 @@ extern "C" {
 				h.env->DeleteLocalRef(h.classID);
 				t.env->CallVoidMethod(obj, t.methodID, handler);
 			}
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
+#endif
+	void setShareDialogHandlerJni(jobject obj, void* delegate){
+		JniMethodInfo t;
+		if(JniHelper::getStaticMethodInfo(t, "org/cocos2dx/lib/gree/NativeThreadHelper", "setHandler", "(Landroid/content/Context;Ljava/lang/Object;Ljava/lang/String;J)V")){
+			jobject context = getPlatformContext();
+			jstring dialogType = t.env->NewStringUTF("ShareDialog");
+			t.env->CallStaticVoidMethod(t.classID, t.methodID, context, obj, dialogType, delegate);
+			t.env->DeleteLocalRef(dialogType);
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}

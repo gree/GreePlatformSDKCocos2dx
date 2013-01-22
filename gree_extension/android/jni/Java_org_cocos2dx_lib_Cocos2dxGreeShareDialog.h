@@ -9,7 +9,7 @@ extern "C"
 {
 	jobject createShareDialogJni(void);
 
-	void setShareDialogHandlerJni(jobject obj);
+	void setShareDialogHandlerJni(jobject obj, void *delegate);
 	void setShareDialogParamsJni(jobject obj, cocos2d::CCDictionary *params);
 	void showShareDialogJni(jobject obj);
 }

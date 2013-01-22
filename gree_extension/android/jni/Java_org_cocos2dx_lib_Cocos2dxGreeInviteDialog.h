@@ -9,7 +9,7 @@ extern "C"
 {
 	jobject createInviteDialogJni(void);
 
-	void setInviteDialogHandlerJni(jobject obj);
+	void setInviteDialogHandlerJni(jobject obj, void *delegate);
 	void setInviteDialogParamsJni(jobject obj, cocos2d::CCDictionary *params);
 	void showInviteDialogJni(jobject obj);
 }

@@ -142,6 +142,12 @@ void CCGreePayment::handlePaymentRequestOnFailure(int responseCode, const char *
 		delegate->paymentRequestFailure(this, responseCode, str1, str2);
 	}
 }
+void CCGreePayment::handleDialogOpened(){
+	CCGreePaymentDelegate *delegate = CCGreePlatform::getPaymentDelegate();
+	if(delegate != NULL){
+		delegate->paymentRequestOpened(this);
+	}
+}
 
 void CCGreePayment::handlePaymentVerifyOnSuccess(int responseCode, const char* paymentId){
 	CCGreePaymentDelegate *delegate = CCGreePlatform::getPaymentDelegate();

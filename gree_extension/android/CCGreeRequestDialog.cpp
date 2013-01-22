@@ -16,6 +16,7 @@ CCGreeRequestDialog* CCGreeRequestDialog::create(){
 	if(obj != NULL){
 		dialog = new CCGreeRequestDialog((void*)obj);
 		dialog->autorelease();
+		dialog->retain();
 	}
 	return dialog;
 }
@@ -26,14 +27,40 @@ void CCGreeRequestDialog::setParams(CCDictionary *params){
 	}
 }
 
-
 void CCGreeRequestDialog::show(){
 	if(mRequestDialog != NULL){
-		setRequestDialogHandlerJni((jobject)mRequestDialog);
+		setRequestDialogHandlerJni((jobject)mRequestDialog, (void*)this);
 		showRequestDialogJni((jobject)mRequestDialog);
 	}
 }
 
+void CCGreeRequestDialog::handleDialogOpened(){
+	CCGreeRequestDialogDelegate *delegate = CCGreePlatform::getRequestDialogDelegate();
+	if(delegate != NULL){
+		delegate->requestDialogOpened(this);
+	}
+}
+void CCGreeRequestDialog::handleDialogCompleted(int count, const char** users){
+	CCGreeRequestDialogDelegate *delegate = CCGreePlatform::getRequestDialogDelegate();
+	if(delegate != NULL){
+		CCArray *userStringArray = new CCArray();
+		if(users != NULL){
+			for(int i = 0; i < count; i++){
+				CCString *str = new CCString(users[i]);
+				str->autorelease();
+				userStringArray->addObject(str);
+			}
+		}
+		delegate->requestDialogCompleted(this, userStringArray);
+	}
+}
+
+void CCGreeRequestDialog::handleDialogCanceled(){
+	CCGreeRequestDialogDelegate *delegate = CCGreePlatform::getRequestDialogDelegate();
+	if(delegate != NULL){
+		delegate->requestDialogCanceled(this);
+	}
+}
 
 NS_CC_GREE_EXT_END
 
