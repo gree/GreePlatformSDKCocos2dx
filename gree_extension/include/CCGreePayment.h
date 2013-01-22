@@ -29,6 +29,7 @@ class CCGreePaymentItem : public CCObject
 {
 	public:
 		CCGreePaymentItem(void* obj);
+		~CCGreePaymentItem();
 		static CCGreePaymentItem *create(const char *itemId, const char* itemName, double unitPrice, int quantity);
 		void setImageUrl(const char *url);
 		void setDescription(const char *desc);
@@ -50,12 +51,15 @@ class CCGreePaymentItem : public CCObject
 class CCGreePayment : public CCObject
 {
 	public:
-		CCGreePayment(void* obj);
+		CCGreePayment(void* obj, CCString *message, CCArray *items);
+		~CCGreePayment();
 		static CCGreePayment* create(const char *message, CCArray *items);
 		static void verify(const char *paymentId);
 		
 		void request();
 		void setCallbackUrl(const char *url);
+		CCString *getPaymentMessage();
+		CCArray *getPaymentItems();
 
 		//	Callback
 		void handlePaymentRequestOnSuccess(int responseCode, const char* paymentId);
@@ -68,6 +72,8 @@ class CCGreePayment : public CCObject
 		static void handlePaymentVerifyOnFailure(int responseCode, const char* paymentId, const char* response);
 	private:
 		void* mPaymentObj;
+		CCString *mMessage;
+		CCArray *mItems;
 };
 
 NS_CC_GREE_EXT_END

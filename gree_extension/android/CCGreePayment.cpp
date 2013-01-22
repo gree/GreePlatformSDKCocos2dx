@@ -6,14 +6,44 @@
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePlatform.h"
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxGreePayment.h"
 
+#include "jni/JniHelper.h"
+
+#define JAVAVM    cocos2d::JniHelper::getJavaVM()
+
 using namespace cocos2d;
 
 NS_CC_GREE_EXT_BEGIN
 
-CCGreePaymentItem::CCGreePaymentItem(void* obj){
-	mPaymentItemObj = obj;
+static bool getEnv(JNIEnv **env){
+	bool bRet = false;
+
+	do{
+		if (JAVAVM->GetEnv((void**)env, JNI_VERSION_1_4) != JNI_OK){
+			CCLog("Failed to get the environment using GetEnv()");
+			break;
+		}
+
+		if (JAVAVM->AttachCurrentThread(env, 0) < 0){
+			CCLog("Failed to get the environment using AttachCurrentThrea    d()");
+			break;
+		}
+
+		bRet = true;
+	} while (0);
+
+	return bRet;
 }
 
+CCGreePaymentItem::CCGreePaymentItem(void* obj){
+	JNIEnv *pEnv = 0;
+	getEnv(&pEnv);
+	mPaymentItemObj = (void*)(pEnv->NewGlobalRef((jobject)obj));
+}
+CCGreePaymentItem::~CCGreePaymentItem(){
+	JNIEnv *pEnv = 0;
+	getEnv(&pEnv);
+	pEnv->DeleteGlobalRef((jobject)mPaymentItemObj);
+}
 
 CCGreePaymentItem* CCGreePaymentItem::create(const char *itemId, const char* itemName, double unitPrice, int quantity){
 	jobject obj = createPaymentItemJni(itemId, itemName, unitPrice, quantity);
@@ -71,20 +101,31 @@ CCString *CCGreePaymentItem::getDescription(){
 	CALL_JNI_STRING_METHOD_WITHOBJECT(getDescription, mPaymentItemObj);
 }
 
-
-
-
-
 // CCGreePayment
-CCGreePayment::CCGreePayment(void* obj){
+CCGreePayment::CCGreePayment(void* obj, CCString *message, CCArray *items){
 	mPaymentObj = obj;
+	mMessage = message;
+	mMessage->retain();
+	mItems = items;
+	mItems->retain();
+}
+
+CCGreePayment::~CCGreePayment(){
+	if(mMessage != NULL){
+		mMessage->release();
+	}
+	if(mItems != NULL){
+		mItems->release();
+	}
 }
 
 CCGreePayment* CCGreePayment::create(const char *message, CCArray *items){
 	jobject obj = createPaymentJni(message, items);
 	CCGreePayment* payment = NULL;
 	if(obj != NULL){
-		payment = new CCGreePayment((void*)obj);
+		CCString *pMessage = new CCString(message);
+		pMessage->autorelease();
+		payment = new CCGreePayment((void*)obj, pMessage, items);
 		payment->autorelease();
 		//TODO : Want to remove retain().
 		//       But in such case, developer have to issue retain() by himself to use
@@ -109,6 +150,13 @@ void CCGreePayment::setCallbackUrl(const char *url){
 	if(mPaymentObj != NULL){
 		setCallbackUrlJni((jobject)mPaymentObj, url);
 	}
+}
+
+CCString* CCGreePayment::getPaymentMessage(){
+	return this->mMessage;
+}
+CCArray* CCGreePayment::getPaymentItems(){
+	return this->mItems;
 }
 
 void CCGreePayment::verify(const char *paymentId){
@@ -183,7 +231,4 @@ void CCGreePayment::handlePaymentVerifyOnFailure(int responseCode, const char *p
 }
 
 NS_CC_GREE_EXT_END
-
-
-
 
