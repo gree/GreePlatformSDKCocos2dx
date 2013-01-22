@@ -81,6 +81,10 @@ CCGreePaymentItem::CCGreePaymentItem(void *obj){
     mPaymentItemObj = obj;
 }
 
+CCGreePaymentItem::~CCGreePaymentItem(){
+
+}
+
 CCGreePaymentItem* CCGreePaymentItem::create(const char *itemId, const char *itemName, double unitPrice, int quantity){
     CCGreePaymentItem *item = NULL;
     if(itemId == NULL || itemName == NULL || unitPrice < 0 || quantity < 0){
@@ -198,10 +202,15 @@ void *CCGreePaymentItem::getPaymentItemObject(){
 }
 
 //Payment
-CCGreePayment::CCGreePayment(void *obj){
+//CCGreePayment::CCGreePayment(void *obj){
+CCGreePayment::CCGreePayment(void *obj, CCString* message, CCArray* items){
+    // in iOS mMessage and mItems are not used.
     mPaymentObj = obj;
-    
-    
+    ((CCObject*)mPaymentObj)->retain();
+}
+
+CCGreePayment::~CCGreePayment(){
+    ((CCObject*)mPaymentObj)->release();
 }
 
 CCGreePayment* CCGreePayment::create(const char *message, CCArray *items){
@@ -214,9 +223,27 @@ CCGreePayment* CCGreePayment::create(const char *message, CCArray *items){
     params->setObject(pMessage, "message");
     params->setObject(items, "items");
 
-    payment = new CCGreePayment((void*)params);
+    //payment = new CCGreePayment((void*)params);
+    payment = new CCGreePayment((void*)params, NULL, NULL);
 
     return payment;
+}
+
+CCString* CCGreePayment::getPaymentMessage(){
+    CCString *message = NULL;
+    if(mPaymentObj != NULL){
+        CCDictionary *dict = (CCDictionary*)mPaymentObj;
+        message = (CCString*)dict->objectForKey("message");
+    }
+    return message;
+}
+CCArray* CCGreePayment::getPaymentItems(){
+    CCArray *items = NULL;
+    if(mPaymentObj != NULL){
+        CCDictionary *dict = (CCDictionary*)mPaymentObj;
+        items = (CCArray*)dict->objectForKey("items");
+    }
+    return items;
 }
 
 
