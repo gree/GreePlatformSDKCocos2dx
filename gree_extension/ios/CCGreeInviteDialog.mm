@@ -62,18 +62,46 @@ void CCGreeInviteDialog::show(){
         };
         invitePopup.didLaunchBlock =^(GreePopup* aSender) {
             NSLog(@"invite popup did launch.");
+            CCGreeInviteDialogDelegate *delegate = CCGreePlatform::getInviteDialogDelegate();
+            if(delegate != NULL){
+                delegate->inviteDialogOpened(this);
+            }
         };
         invitePopup.willDismissBlock =^(GreePopup* aSender) {
             NSLog(@"invite popup will dismiss.");
         };
         invitePopup.didDismissBlock =^(GreePopup* aSender) {
             NSLog(@"invite popup did dismiss.");
+            CCGreeInviteDialogDelegate *delegate = CCGreePlatform::getInviteDialogDelegate();
+            if(delegate != NULL){
+                delegate->inviteDialogClosed(this);
+            }
         };
         invitePopup.cancelBlock =^(GreePopup* aSender) {
             NSLog(@"invite popup was cancelled.");
         };
         invitePopup.completeBlock =^(GreePopup* aSender) {
             NSLog(@"invite popup completed.");
+            CCGreeInviteDialogDelegate *delegate = CCGreePlatform::getInviteDialogDelegate();
+            if(delegate != NULL){
+                CCArray *arry = new CCArray();
+                NSDictionary *data=[aSender.results objectForKey:@"data"];
+                NSArray *recipient_user_ids=[data objectForKey:@"recipient_user_ids"];
+                for (NSString *idString in recipient_user_ids)
+                {
+                    /*if (idString==[recipient_user_ids lastObject])
+                    {
+                        recipientIdsString=[recipientIdsString stringByAppendingFormat:@"%@",idString];
+                    }else
+                    {
+                        recipientIdsString=[recipientIdsString stringByAppendingFormat:@"%@,",idString];
+                    }*/
+                    CCString* ccStr = NULL;
+                    ccStr = new CCString([idString UTF8String]);
+                    arry->addObject(ccStr);
+                }
+                delegate->inviteDialogCompleted(this, arry);
+            }
         };
 
         [[UIViewController greeLastPresentedViewController] showGreePopup:invitePopup];

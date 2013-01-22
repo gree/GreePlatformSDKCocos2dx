@@ -67,18 +67,31 @@ void CCGreeShareDialog::show(){
         };
         sharePopup.didLaunchBlock =^(GreePopup* aSender) {
             NSLog(@"share popup did launch.");
+            CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+            if(delegate != NULL){
+                delegate->shareDialogOpened(this);
+            }
         };
         sharePopup.willDismissBlock =^(GreePopup* aSender) {
             NSLog(@"share popup will dismiss.");
         };
         sharePopup.didDismissBlock =^(GreePopup* aSender) {
             NSLog(@"share popup did dismiss.");
+            CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+            if(delegate != NULL){
+                delegate->shareDialogClosed(this);
+            }
         };
         sharePopup.cancelBlock =^(GreePopup* aSender) {
             NSLog(@"share popup was cancelled.");
         };
         sharePopup.completeBlock =^(GreePopup* aSender) {
             NSLog(@"share popup completed.");
+            CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
+            if(delegate != NULL){
+                CCArray *arry = new CCArray();
+                delegate->shareDialogCompleted(this, arry);
+            }
         };
 
         //Show popup
