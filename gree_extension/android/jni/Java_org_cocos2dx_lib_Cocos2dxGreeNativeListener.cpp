@@ -686,5 +686,11 @@ extern "C" {
 			payment->handleDialogOpened();
 		}
 	}
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativePaymentHandler_nativePaymentDialogClosed(JNIEnv *env, jobject obj, jlong delegate){
+		if(delegate){
+			CCGreePayment *payment = (CCGreePayment*)delegate;
+			payment->handleDialogClosed();
+		}
+	}
 }
 

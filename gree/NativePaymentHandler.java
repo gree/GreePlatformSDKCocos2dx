@@ -14,8 +14,7 @@ public class NativePaymentHandler extends Handler {
 		this.mDelegate = delegate;
 	}
 	private native void nativePaymentDialogOpened(long delegate);
-	//private native void nativePaymentDialogClosed(long delegate);
-	//private native void nativePaymentDialogCanceled(long delegate);
+	private native void nativePaymentDialogClosed(long delegate);
 	public void handleMessage(Message message) {
 		switch (message.what) {
 			case Payment.OPENED:
@@ -24,11 +23,10 @@ public class NativePaymentHandler extends Handler {
 				break;
 			case Payment.DONE:
 				//Toast.makeText((Context)mContext, "Payment Dialog done", Toast.LENGTH_SHORT).show();
-				//nativePaymentDialogClosed();
 				//break;
 			case Payment.CANCELLED:
 			case Payment.ABORTED:
-				//nativePaymentDialogCanceled();
+				nativePaymentDialogClosed(this.mDelegate);
 				//Toast.makeText((Context)mContext, "Payment Dialog closed", Toast.LENGTH_SHORT).show();
 				break;
 			default:
