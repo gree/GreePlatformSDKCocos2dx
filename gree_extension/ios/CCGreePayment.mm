@@ -7,9 +7,73 @@
 #import "cocoa/CCDictionary.h"
 
 using namespace cocos2d;
+using namespace cocos2d::gree_extension;
+
+@interface GreeWalletDispatcher : NSObject<GreeWalletDelegate>
+{
+    void* mDelegate;
+}
+
+-(id)initWithItems:(void *)delegate
+                 items:(NSMutableArray*)items
+               message:(NSString*)message
+           callbackUrl:(NSString*)callbackUrl
+          successBlock:(void(^)(NSString *paymentId, NSArray* items))successBlock
+          failureBlock:(void(^)(NSString *paymentId, NSArray* items, NSError* error))failureBlock;
+@end
+
+@implementation GreeWalletDispatcher
+
+-(id)initWithItems:(void*)delegate
+             items:(NSMutableArray*)items
+               message:(NSString*)message
+           callbackUrl:(NSString*)callbackUrl
+          successBlock:(void(^)(NSString *paymentId, NSArray* items))successBlock
+          failureBlock:(void(^)(NSString *paymentId, NSArray* items, NSError* error))failureBlock
+{
+    if ((self=[super init]))
+    {
+        mDelegate = delegate;
+        [GreeWallet setDelegate:self];
+        
+        [GreeWallet paymentWithItems:items
+                             message:message
+                         callbackUrl:callbackUrl
+                        successBlock:successBlock
+                        failureBlock:failureBlock];
+    }
+    return self;
+}
+
+
+#pragma mark - walletDelegate
+- (void)walletPaymentDidLaunchPopup
+{
+    NSLog(@"%s paymentDidLaunchPopup",__FUNCTION__);
+    CCGreePaymentDelegate *delegate = CCGreePlatform::getPaymentDelegate();
+    if(delegate != NULL && mDelegate != NULL){
+        delegate->paymentRequestOpened((CCGreePayment*) mDelegate);
+    }
+}
+- (void)walletPaymentDidDismissPopup
+{
+    NSLog(@"%s paymentDidDismissPopup",__FUNCTION__);
+    [self release];
+    CCGreePaymentDelegate *delegate = CCGreePlatform::getPaymentDelegate();
+    if(delegate != NULL && mDelegate != NULL){
+        delegate->paymentRequestClosed((CCGreePayment *) mDelegate);
+    }
+}
+
+-(void)dealloc
+{
+    [super dealloc];
+}
+
+@end
+
 
 NS_CC_GREE_EXT_BEGIN
-
 
 //PaymentItem
 
@@ -195,6 +259,20 @@ void CCGreePayment::request(){
             }
         }
         
+        [[GreeWalletDispatcher alloc] initWithItems:(void*)this
+                                              items:itemsList
+                                            message:messageStr
+                                        callbackUrl:urlStr
+                                       successBlock:^(NSString* paymentId, NSArray* items){
+                                           NSLog(@"Payment Request Success");
+                                           this->handlePaymentRequestOnSuccess((int)0, [paymentId UTF8String]);
+                                       }
+                                       failureBlock:^(NSString* paymentId, NSArray* items, NSError* error){
+                                           NSLog(@"Payment Request Failure");
+                                           this->handlePaymentRequestOnFailure([error code], [paymentId UTF8String], [[error description] UTF8String]);
+                                       }
+         ];
+        /* To catch dialog open/close callback, wrap apicall with GreeWalletDispatcher
         [GreeWallet paymentWithItems:itemsList
                          message:messageStr
                          callbackUrl:urlStr
@@ -206,7 +284,7 @@ void CCGreePayment::request(){
                         NSLog(@"Payment Request Failure");
                         this->handlePaymentRequestOnFailure([error code], [paymentId UTF8String], [[error description] UTF8String]);
                     }
-         ];
+         ];*/
     }
 }
 
@@ -229,8 +307,6 @@ void CCGreePayment::handlePaymentRequestOnFailure(int responseCode, const char *
         delegate->paymentRequestFailure(this, responseCode, str1, str2);
     }
 }
-
-
 
 NS_CC_GREE_EXT_END
 
