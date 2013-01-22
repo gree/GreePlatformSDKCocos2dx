@@ -54,13 +54,14 @@ void CCGreeShareDialog::handleDialogCompleted(int count, const char** users){
 			}
 		}
 		delegate->shareDialogCompleted(this, userStringArray);
+		delegate->shareDialogClosed(this);
 	}
 }
 
-void CCGreeShareDialog::handleDialogCanceled(){
+void CCGreeShareDialog::handleDialogClosed(){
 	CCGreeShareDialogDelegate *delegate = CCGreePlatform::getShareDialogDelegate();
 	if(delegate != NULL){
-		delegate->shareDialogCanceled(this);
+		delegate->shareDialogClosed(this);
 	}
 }
 

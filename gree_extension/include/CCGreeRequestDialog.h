@@ -28,7 +28,7 @@ class CCGreeRequestDialogDelegate {
 	public:
 		virtual void requestDialogOpened(CCGreeRequestDialog *dialog){};
 		virtual void requestDialogCompleted(CCGreeRequestDialog *dialog, CCArray *userArray){};
-		virtual void requestDialogCanceled(CCGreeRequestDialog *dialog){};
+		virtual void requestDialogClosed(CCGreeRequestDialog *dialog){};
 };
 
 class CCGreeRequestDialog : public CCObject {
@@ -39,7 +39,7 @@ class CCGreeRequestDialog : public CCObject {
 
 		void handleDialogOpened();
 		void handleDialogCompleted(int count, const char** users);
-		void handleDialogCanceled();
+		void handleDialogClosed();
 	private:
 		CCGreeRequestDialog(void* obj);
 		void* mRequestDialog;

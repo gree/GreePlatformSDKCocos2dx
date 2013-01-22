@@ -610,10 +610,10 @@ extern "C" {
 		}
 	}
 
-	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeInviteDialogHandler_nativeInviteDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeInviteDialogHandler_nativeInviteDialogClosed(JNIEnv *env, jobject obj, jlong delegate){
 		if(delegate){
 			CCGreeInviteDialog *dialog = (CCGreeInviteDialog*)delegate;
-			dialog->handleDialogCanceled();
+			dialog->handleDialogClosed();
 		}
 	}
 
@@ -632,10 +632,10 @@ extern "C" {
 		}
 	}
 
-	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeShareDialogHandler_nativeShareDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeShareDialogHandler_nativeShareDialogClosed(JNIEnv *env, jobject obj, jlong delegate){
 		if(delegate){
 			CCGreeShareDialog *dialog = (CCGreeShareDialog*)delegate;
-			dialog->handleDialogCanceled();
+			dialog->handleDialogClosed();
 		}
 	}
 
@@ -672,10 +672,10 @@ extern "C" {
 		}
 	}
 
-	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeRequestDialogHandler_nativeRequestDialogCanceled(JNIEnv *env, jobject obj, jlong delegate){
+	JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_NativeRequestDialogHandler_nativeRequestDialogClosed(JNIEnv *env, jobject obj, jlong delegate){
 		if(delegate){
 			CCGreeRequestDialog *dialog = (CCGreeRequestDialog*)delegate;
-			dialog->handleDialogCanceled();
+			dialog->handleDialogClosed();
 		}
 	}
 

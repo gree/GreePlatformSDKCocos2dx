@@ -19,7 +19,7 @@ public class NativeInviteDialogHandler extends Handler {
 	}
 	private native void nativeInviteDialogOpened(long delegate);
 	private native void nativeInviteDialogCompleted(long delegate, int length, String[] array);
-	private native void nativeInviteDialogCanceled(long delegate);
+	private native void nativeInviteDialogClosed(long delegate);
 
 	public void handleMessage(Message message) {
 		switch (message.what) {
@@ -43,7 +43,7 @@ public class NativeInviteDialogHandler extends Handler {
 					nativeInviteDialogCompleted(this.mDelegate, array.length(), strArray);
 				}else{
 					//Toast.makeText((Context)mContext, "DialogClosed ", Toast.LENGTH_SHORT).show();
-					nativeInviteDialogCanceled(this.mDelegate);
+					nativeInviteDialogClosed(this.mDelegate);
 				}
 				break;
 			default:

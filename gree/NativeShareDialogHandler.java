@@ -16,7 +16,7 @@ public class NativeShareDialogHandler extends Handler {
 	}
 	private native void nativeShareDialogOpened(long delegate);
 	private native void nativeShareDialogCompleted(long delegate);
-	private native void nativeShareDialogCanceled(long delegate);
+	private native void nativeShareDialogClosed(long delegate);
 
 	public void handleMessage(Message message) {
 		switch (message.what) {
@@ -30,7 +30,7 @@ public class NativeShareDialogHandler extends Handler {
 					nativeShareDialogCompleted(this.mDelegate);
 				}else{
 					//Toast.makeText((Context)mContext, "DialogClosed ", Toast.LENGTH_SHORT).show();
-					nativeShareDialogCanceled(this.mDelegate);
+					nativeShareDialogClosed(this.mDelegate);
 				}
 				break;
 			default:

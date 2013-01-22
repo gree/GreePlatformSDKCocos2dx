@@ -22,7 +22,7 @@ class CCGreeInviteDialogDelegate {
 	public:
 		virtual void inviteDialogOpened(CCGreeInviteDialog *dialog){};
 		virtual void inviteDialogCompleted(CCGreeInviteDialog *dialog, CCArray *userArray){};
-		virtual void inviteDialogCanceled(CCGreeInviteDialog *dialog){};
+		virtual void inviteDialogClosed(CCGreeInviteDialog *dialog){};
 };
 
 class CCGreeInviteDialog : public CCObject {
@@ -33,7 +33,7 @@ class CCGreeInviteDialog : public CCObject {
 
 		void handleDialogOpened();
 		void handleDialogCompleted(int count, const char** users);
-		void handleDialogCanceled();
+		void handleDialogClosed();
 	private:
 		CCGreeInviteDialog(void* obj);
 		void* mInviteDialog;

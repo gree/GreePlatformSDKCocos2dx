@@ -52,13 +52,14 @@ void CCGreeRequestDialog::handleDialogCompleted(int count, const char** users){
 			}
 		}
 		delegate->requestDialogCompleted(this, userStringArray);
+		delegate->requestDialogClosed(this);
 	}
 }
 
-void CCGreeRequestDialog::handleDialogCanceled(){
+void CCGreeRequestDialog::handleDialogClosed(){
 	CCGreeRequestDialogDelegate *delegate = CCGreePlatform::getRequestDialogDelegate();
 	if(delegate != NULL){
-		delegate->requestDialogCanceled(this);
+		delegate->requestDialogClosed(this);
 	}
 }
 

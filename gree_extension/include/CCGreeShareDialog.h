@@ -21,7 +21,7 @@ class CCGreeShareDialogDelegate {
 	public:
 		virtual void shareDialogOpened(CCGreeShareDialog *dialog){};
 		virtual void shareDialogCompleted(CCGreeShareDialog *dialog, CCArray *userArray){};
-		virtual void shareDialogCanceled(CCGreeShareDialog *dialog){};
+		virtual void shareDialogClosed(CCGreeShareDialog *dialog){};
 };
 
 class CCGreeShareDialog : public CCObject {
@@ -32,7 +32,7 @@ class CCGreeShareDialog : public CCObject {
 
 		void handleDialogOpened();
 		void handleDialogCompleted(int count, const char** users);
-		void handleDialogCanceled();
+		void handleDialogClosed();
 	private:
 		CCGreeShareDialog(void* obj);
 		void* mShareDialog;

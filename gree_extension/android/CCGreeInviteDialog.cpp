@@ -54,13 +54,14 @@ void CCGreeInviteDialog::handleDialogCompleted(int count, const char** users){
 			}
 		}
 		delegate->inviteDialogCompleted(this, userStringArray);
+		delegate->inviteDialogClosed(this);
 	}
 }
 
-void CCGreeInviteDialog::handleDialogCanceled(){
+void CCGreeInviteDialog::handleDialogClosed(){
 	CCGreeInviteDialogDelegate *delegate = CCGreePlatform::getInviteDialogDelegate();
 	if(delegate != NULL){
-		delegate->inviteDialogCanceled(this);
+		delegate->inviteDialogClosed(this);
 	}
 }
 

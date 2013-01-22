@@ -20,7 +20,7 @@ public class NativeRequestDialogHandler extends Handler {
 	}
 	private native void nativeRequestDialogOpened(long delegate);
 	private native void nativeRequestDialogCompleted(long delegate, int length, String[] array);
-	private native void nativeRequestDialogCanceled(long delegate);
+	private native void nativeRequestDialogClosed(long delegate);
 
 	public void handleMessage(Message message) {
 		switch (message.what) {
@@ -44,7 +44,7 @@ public class NativeRequestDialogHandler extends Handler {
 					nativeRequestDialogCompleted(this.mDelegate, array.length(), strArray);
 				}else{
 					//Toast.makeText((Context)mContext, "DialogClosed ", Toast.LENGTH_SHORT).show();
-					nativeRequestDialogCanceled(this.mDelegate);
+					nativeRequestDialogClosed(this.mDelegate);
 				}
 				break;
 			default:
