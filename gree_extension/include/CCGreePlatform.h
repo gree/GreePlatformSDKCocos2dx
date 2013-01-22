@@ -40,32 +40,12 @@ class CCGreePlatform {
 		// Currently only one client can be registered with setXXXXDelegate,
 		// but if needed can be modified to support multi client, 
 		//and to support that removeXXXXDelegate is defined to get Delegate as args.
-		static void setUserDelegate(CCGreeUserDelegate *pDelegate) { s_pUserDelegate = pDelegate; }
-		static void removeUserDelegate(CCGreeUserDelegate *pDelegate) { s_pUserDelegate = NULL; }
-		static CCGreeUserDelegate *getUserDelegate() { return s_pUserDelegate; }
-		static void setPaymentDelegate(CCGreePaymentDelegate *pDelegate) { s_pPaymentDelegate = pDelegate; }
-		static void removePaymentDelegate(CCGreePaymentDelegate *pDelegate) { s_pPaymentDelegate = NULL; }
-		static CCGreePaymentDelegate *getPaymentDelegate() { return s_pPaymentDelegate; }
-		static void setAchievementDelegate(CCGreeAchievementDelegate *pDelegate) { s_pAchievementDelegate = pDelegate; }
-		static void removeAchievementDelegate(CCGreeAchievementDelegate *pDelegate) { s_pAchievementDelegate = NULL; }
-		static CCGreeAchievementDelegate *getAchievementDelegate() { return s_pAchievementDelegate; }
-		static void setAuthorizerDelegate(CCGreeAuthorizerDelegate *pDelegate) { s_pAuthorizerDelegate = pDelegate; }
-		static void removeAuthorizerDelegate(CCGreeAuthorizerDelegate *pDelegate) { s_pAuthorizerDelegate = NULL; }
-		static CCGreeAuthorizerDelegate *getAuthorizerDelegate() { return s_pAuthorizerDelegate; }
-		static void setLeaderboardDelegate(CCGreeLeaderboardDelegate *pDelegate) { s_pLeaderboardDelegate = pDelegate; }
-		static void removeLeaderboardDelegate(CCGreeLeaderboardDelegate *pDelegate) { s_pLeaderboardDelegate = NULL; }
-		static CCGreeLeaderboardDelegate *getLeaderboardDelegate() { return s_pLeaderboardDelegate; }
-		static void setFriendCodeDelegate(CCGreeFriendCodeDelegate *pDelegate) { s_pFriendCodeDelegate = pDelegate; }
-		static CCGreeFriendCodeDelegate *getFriendCodeDelegate() { return s_pFriendCodeDelegate; }
-		static void removeFriendCodeDelegate(CCGreeFriendCodeDelegate *pDelegate) { s_pFriendCodeDelegate = NULL; }
-
-	private:
-		static CCGreeUserDelegate        *s_pUserDelegate;
-		static CCGreePaymentDelegate     *s_pPaymentDelegate;
-		static CCGreeAchievementDelegate *s_pAchievementDelegate;
-		static CCGreeAuthorizerDelegate  *s_pAuthorizerDelegate;
-		static CCGreeLeaderboardDelegate *s_pLeaderboardDelegate;
-		static CCGreeFriendCodeDelegate  *s_pFriendCodeDelegate;
+		CREATE_DELEGATE(UserDelegate);
+		CREATE_DELEGATE(PaymentDelegate);
+		CREATE_DELEGATE(AchievementDelegate);
+		CREATE_DELEGATE(AuthorizerDelegate);
+		CREATE_DELEGATE(LeaderboardDelegate);
+		CREATE_DELEGATE(FriendCodeDelegate);
 		CREATE_DELEGATE(InviteDialogDelegate);
 		CREATE_DELEGATE(ShareDialogDelegate);
 		CREATE_DELEGATE(RequestDialogDelegate);
