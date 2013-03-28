@@ -99,6 +99,7 @@ void HelloWorld::authorizeAuthorized(){
 
 // User
 void HelloWorld::loadThumbnailSuccess(CCGreeUser* user, CCImage *img){
+	img->retain();
     CCLog("++++++ %s", __func__);
     std::string str1 = "Callback";
     std::string str2 = "loadThumbnail Success";
