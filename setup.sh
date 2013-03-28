@@ -63,25 +63,40 @@ function prepareGreePlatform() {
 	cp ${PATCHDIR}/${PROJECT_CREATE_SCRIPT} ${TARGET}
 	cp ${PATCHDIR}/${INSTALL_GREE_TEMPLATE_SCRIPT} ${TARGET}
 
-	echo "Apply patch for gree_extension"
-	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.patch
 }
 
 function prepareWebView() {
 	echo "Prepare WebView";
 	rsync -a --delete ${WEBVIEWDIR} ${TARGET}
 	rsync -a --delete ${WEBVIEWJAVADIR} ${JAVADIR}/gree/
+	rsync -a --delete ${PATCHDIR}/WebViewTest ${TARGET}/samples/
 	rsync -a ${PATCHDIR}/template/xcode4/lib_webview_plugin.xctemplate ${TARGET}/template/xcode4
 	rsync -a ${PATCHDIR}/template/xcode4/cocos2dx_webview_plugin.xctemplate ${TARGET}/template/xcode4
 	#cp ${PATCHDIR}/${WEBVIEW_PROJECT_CREATE_SCRIPT} ${TARGET}
 	cp ${PATCHDIR}/${INSTALL_WEBVIEW_TEMPLATE_SCRIPT} ${TARGET}
 }
 
+function applyGreePatch() {
+	echo "Apply patch for gree_extension"
+	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.patch
+}
+
+function applyAllPatch() {
+	echo "Apply patch for gree_extension and webview_plugin"
+	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.all.patch
+}
+
+function applyWebViewPatch() {
+	echo "Apply patch for webview_plugin"
+	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.webview.patch
+}
+
+
 case $Mode in
-    "default" ) prepareGreePlatform ;;
-    "webview" ) prepareWebView ;;
-    "all"     ) prepareGreePlatform; prepareWebView ;;
-	*         ) prepareGreePlatform ;;
+    "default" ) prepareGreePlatform; applyGreePatch ;;
+    "webview" ) prepareWebView; applyWebViewPatch ;;
+    "all"     ) prepareGreePlatform; prepareWebView; applyAllPatch ;;
+	*         ) prepareGreePlatform; applyGreePatch ;;
 esac
 
 echo "Finish Setup"

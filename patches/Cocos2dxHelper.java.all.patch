@@ -1,0 +1,22 @@
+--- cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxHelper.java.org 2012-11-06 20:14:03.854890121 +0900
++++ cocos2dx/platform/android/java/src/org/cocos2dx/lib/Cocos2dxHelper.java 2012-11-06 20:14:25.542970652 +0900
+@@ -26,6 +26,9 @@
+ import java.io.UnsupportedEncodingException;
+ import java.util.Locale;
+ 
++import org.cocos2dx.lib.gree.Cocos2dxGreePlatform;
++import org.cocos2dx.lib.gree.webview.Cocos2dxWebView;
++
+ import android.content.Context;
+ import android.content.pm.ApplicationInfo;
+ import android.content.res.AssetManager;
+@@ -68,6 +71,9 @@
+ 		Cocos2dxHelper.sCocos2dSound = new Cocos2dxSound(pContext);
+ 		Cocos2dxHelper.sAssetManager = pContext.getAssets();
+ 		Cocos2dxBitmap.setContext(pContext);
++		
++		Cocos2dxGreePlatform.init(pContext);
++		Cocos2dxWebView.setContext(pContext);
+ 	}
+ 
+ 	// ===========================================================
