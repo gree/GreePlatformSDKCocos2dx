@@ -5,6 +5,7 @@ import net.gree.asdk.api.ui.InviteDialog;
 import net.gree.asdk.api.ui.RequestDialog;
 import net.gree.asdk.api.ui.ShareDialog;
 import net.gree.asdk.api.wallet.Payment;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -18,28 +19,26 @@ public class NativeThreadHelper {
 	private Object mObject = null;
 
 	public Object createDialog(final Context context, final String dialogType){
+		Activity ac = (Activity)context;
 		final CountDownLatch Signal = new CountDownLatch(1);
-		new Thread(new Runnable(){
-			public void run(){
-				Cocos2dxGreePlatform.getPlatformUIHandler().post(new Runnable(){
-					public void run(){
-						//Log.d(TAG, "Thread name : " + Thread.currentThread().getName());
-						if(dialogType.equals(INVITE_DIALOG)){
-							mObject = (InviteDialog)new InviteDialog(context);
-						}else if(dialogType.equals(REQUEST_DIALOG)){
-							mObject = (RequestDialog)new RequestDialog(context);
-						}else if(dialogType.equals(SHARE_DIALOG)){
-							mObject = (ShareDialog)new ShareDialog(context);
-						}else{
-							Log.e(TAG, "Unsupported dialog type for showDialog");
-							mObject = null;
-						}
-						Signal.countDown();
-					}
-				});
-			}
-		}).start();
 
+		// Dialog apis should be called on UIThread.
+		ac.runOnUiThread(new Runnable(){
+			public void run(){
+			//Log.d(TAG, "Thread name : " + Thread.currentThread().getName());
+			if(dialogType.equals(INVITE_DIALOG)){
+				mObject = (InviteDialog)new InviteDialog(context);
+			}else if(dialogType.equals(REQUEST_DIALOG)){
+				mObject = (RequestDialog)new RequestDialog(context);
+			}else if(dialogType.equals(SHARE_DIALOG)){
+				mObject = (ShareDialog)new ShareDialog(context);
+			}else{
+				Log.e(TAG, "Unsupported dialog type for showDialog");
+				mObject = null;
+			}
+			Signal.countDown();
+			}
+		});
 		try {
 			Signal.await();
 		} catch (InterruptedException e) {
@@ -50,33 +49,37 @@ public class NativeThreadHelper {
 	}
 
 	public static void setHandler(final Context context, final Object obj, final String dialogType, final long delegate){
-		new Thread(new Runnable(){
+		Activity ac = (Activity)context;
+		final CountDownLatch Signal = new CountDownLatch(1);
+		ac.runOnUiThread(new Runnable(){
 			public void run(){
-				Cocos2dxGreePlatform.getPlatformUIHandler().post(new Runnable(){
-					public void run(){
-						if(dialogType.equals(INVITE_DIALOG)){
-							NativeInviteDialogHandler handler = new NativeInviteDialogHandler(context, delegate);
-							final InviteDialog dialog = (InviteDialog)obj;
-							dialog.setHandler(handler);
-						}else if(dialogType.equals(REQUEST_DIALOG)){
-							NativeRequestDialogHandler handler = new NativeRequestDialogHandler(context, delegate);
-							final RequestDialog dialog = (RequestDialog)obj;
-							dialog.setHandler(handler);
-						}else if(dialogType.equals(SHARE_DIALOG)){
-							NativeShareDialogHandler handler = new NativeShareDialogHandler(context, delegate);
-							final ShareDialog dialog = (ShareDialog)obj;
-							dialog.setHandler(handler);
-						}else if(dialogType.equals(PAYMENT_DIALOG)){
-							NativePaymentHandler handler = new NativePaymentHandler(context, delegate);
-							final Payment payment = (Payment)obj;
-							payment.setHandler(handler);
-						}else{
-							Log.e(TAG, "Unsupported dialog type for setHandler");
-						}
-					}
-				});
+				if(dialogType.equals(INVITE_DIALOG)){
+					NativeInviteDialogHandler handler = new NativeInviteDialogHandler(context, delegate);
+					final InviteDialog dialog = (InviteDialog)obj;
+					dialog.setHandler(handler);
+				}else if(dialogType.equals(REQUEST_DIALOG)){
+					NativeRequestDialogHandler handler = new NativeRequestDialogHandler(context, delegate);
+					final RequestDialog dialog = (RequestDialog)obj;
+					dialog.setHandler(handler);
+				}else if(dialogType.equals(SHARE_DIALOG)){
+					NativeShareDialogHandler handler = new NativeShareDialogHandler(context, delegate);
+					final ShareDialog dialog = (ShareDialog)obj;
+					dialog.setHandler(handler);
+				}else if(dialogType.equals(PAYMENT_DIALOG)){
+					NativePaymentHandler handler = new NativePaymentHandler(context, delegate);
+					final Payment payment = (Payment)obj;
+					payment.setHandler(handler);
+				}else{
+					Log.e(TAG, "Unsupported dialog type for setHandler");
+				}
+				Signal.countDown();
 			}
-		}).start();
+		});
+		try {
+			Signal.await();
+		} catch (InterruptedException e) {
+			//Log.e(TAG, "createDialog is interrupted");
+		}
 	}
 
 	public static void showDialog(final Object obj, final String dialogType){

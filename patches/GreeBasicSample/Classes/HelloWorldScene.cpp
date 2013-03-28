@@ -15,7 +15,6 @@ CCSprite* pIcon = NULL;
 int gThumbFlag = 0;
 CCImage *pThumb = NULL;
 
-
 int gFriendFlag = 0;
 CCArray *pFriends = NULL;
 int gNumOfFriend = 0;
@@ -87,6 +86,9 @@ void HelloWorld::menuGreeButtonCallback(CCObject *pSender){
 	CCGreePlatform::setAchievementDelegate(this);
 	CCGreePlatform::setPaymentDelegate(this);
 	CCGreePlatform::setLeaderboardDelegate(this);
+	CCGreePlatform::setRequestDialogDelegate(this);
+	CCGreePlatform::setInviteDialogDelegate(this);
+	CCGreePlatform::setShareDialogDelegate(this);
 	if(CCGreeAuthorizer::isAuthorized() != true){
 		CCGreeAuthorizer::authorize();
 	}else{
@@ -281,6 +283,55 @@ void HelloWorld::menuLeaderboardCallback(CCObject *pSender){
 	CCGreeLeaderboard::loadLeaderboards(1, 10);
 }
 
+void HelloWorld::menuShareDialogCallback(CCObject *pSender){
+	CCSize size = CCDirector::sharedDirector()->getWinSize();
+    CCRenderTexture *tex = CCRenderTexture::renderTextureWithWidthAndHeight(size.width, size.height); 
+	tex->setPosition(ccp(size.width/2, size.height/2));
+    tex->begin();
+    this->visit();
+    tex->end();
+    CCImage *img = tex->newCCImage();
+
+    CCGreeShareDialog *dialog = CCGreeShareDialog::create();
+    CCDictionary *dict = CCDictionary::create();
+    dict->setObject(new CCString("This is test share"), GD_SHARE_DIALOG_PARAM_KEY_MESSAGE);
+    dict->setObject(img, GD_SHARE_DIALOG_PARAM_KEY_IMG);
+    dialog->setParams(dict);
+    dialog->show();
+}
+
+void HelloWorld::menuInviteDialogCallback(CCObject *pSender){
+    CCGreeInviteDialog *dialog = CCGreeInviteDialog::create();
+    if(dialog == NULL){
+        CCLog("+++++++++++++++++ Error ++++++++++");
+    }else{
+        CCDictionary *dict = CCDictionary::create();
+        CCArray *array = new CCArray();
+        array->addObject(new CCString("1000038120"));
+        array->addObject(new CCString("1000038121"));
+        dict->setObject(array, GD_INVITE_DIALOG_PARAM_KEY_TOUSERID);
+        dict->setObject(new CCString("TestInviteBody"), GD_INVITE_DIALOG_PARAM_KEY_BODY);
+        dialog->setParams(dict);
+        dialog->show();
+    }
+}
+
+void HelloWorld::menuRequestDialogCallback(CCObject *pSender){
+    CCGreeRequestDialog *dialog = CCGreeRequestDialog::create();
+    if(dialog == NULL){
+        CCLog("+++++++++++++++++ Error ++++++++++");
+    }else{
+        CCDictionary *dict = CCDictionary::create();
+        CCArray *array = new CCArray();
+        array->addObject(new CCString("1000038120"));
+        array->addObject(new CCString("1000038121"));
+        dict->setObject(array, GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID);
+        dict->setObject(new CCString("TestRequest"), GD_REQUEST_DIALOG_PARAM_KEY_TITLE);
+        dialog->setParams(dict);
+        dialog->show();
+    }
+}
+
 void HelloWorld::menuCreateScoreCallback(CCObject *pSender){
 	int tag = (int)((CCMenuItem*)pSender)->getTag() - 3000;
 	CCLog("++++++ %s Tag:%d", __func__, tag);
@@ -312,7 +363,6 @@ void HelloWorld::menuLogoutCallback(CCObject *pSender){
 int authFlag = 0;
 void HelloWorld::authorizeAuthorized(){
 	CCLog("++++++ %s\n", __func__);
-
 	//CCGreeAuthorizer::upgrade(2);
 
 	std::string str1 = "Callback";
@@ -342,38 +392,51 @@ void HelloWorld::authorizeAuthorized(){
 
 	// Friend Infomation
 	CCSprite *pSFri = CCSprite::create("friends.png");
-	pSFri->setPosition( ccp(size.width/2 - 200, size.height - 200) );
+	pSFri->setPosition( ccp(size.width/2 - 200, size.height - 190) );
 	this->addChild(pSFri, 0);
 	CCLabelTTF *textFri = CCLabelTTF::create("Get Friend Info", "Thonburi", 50);
 	CCMenuItemLabel* pFri = CCMenuItemLabel::create(textFri, this, menu_selector(HelloWorld::menuFriendCallback));
-	pFri->setPosition(ccp(size.width/2 + 40, size.height - 200));
+	pFri->setPosition(ccp(size.width/2 + 40, size.height - 190));
 
 
 	// Payment
 	CCSprite *pSPay = CCSprite::create("payment.png");
-	pSPay->setPosition( ccp(size.width/2 - 200, size.height - 280) );
+	pSPay->setPosition( ccp(size.width/2 - 200, size.height - 260) );
 	this->addChild(pSPay, 0);
 	CCLabelTTF *textPay = CCLabelTTF::create("Request Payment", "Thonburi", 50);
 	CCMenuItemLabel* pPay = CCMenuItemLabel::create(textPay, this, menu_selector(HelloWorld::menuPaymentCallback));
-	pPay->setPosition(ccp(size.width/2 + 40, size.height - 280));
+	pPay->setPosition(ccp(size.width/2 + 40, size.height - 260));
 
 
 	// Achievement
 	CCSprite *pSAch = CCSprite::create("achieve.png");
-	pSAch->setPosition( ccp(size.width/2 - 200, size.height - 360));
+	pSAch->setPosition( ccp(size.width/2 - 200, size.height - 320));
 	this->addChild(pSAch, 0);
 	CCLabelTTF *textAch = CCLabelTTF::create("Load Achievement", "Thonburi", 50);
 	CCMenuItemLabel* pAch = CCMenuItemLabel::create(textAch, this, menu_selector(HelloWorld::menuAchievementCallback));
-	pAch->setPosition(ccp(size.width/2 + 40, size.height - 360));
+	pAch->setPosition(ccp(size.width/2 + 40, size.height - 320));
 
 
 	// Leaderboard
 	CCSprite *pSLea = CCSprite::create("leaderboard.png");
-	pSLea->setPosition(ccp(size.width/2 - 200, size.height - 440));
+	pSLea->setPosition(ccp(size.width/2 - 200, size.height - 380));
 	this->addChild(pSLea, 0);
 	CCLabelTTF *textLea = CCLabelTTF::create("Load Leaderboard", "Thonburi", 50);
 	CCMenuItemLabel* pLea = CCMenuItemLabel::create(textLea, this, menu_selector(HelloWorld::menuLeaderboardCallback));
-	pLea->setPosition(ccp(size.width/2 + 40, size.height - 440));
+	pLea->setPosition(ccp(size.width/2 + 40, size.height - 380));
+
+
+	CCLabelTTF *textShare = CCLabelTTF::create("Show ShareDialog", "Thonburi", 50);
+	CCMenuItemLabel* pShare = CCMenuItemLabel::create(textShare, this, menu_selector(HelloWorld::menuShareDialogCallback));
+	pShare->setPosition(ccp(size.width/2 + 40, size.height - 440));
+
+	CCLabelTTF *textInvite = CCLabelTTF::create("Show InviteDialog", "Thonburi", 50);
+	CCMenuItemLabel* pInvite = CCMenuItemLabel::create(textInvite, this, menu_selector(HelloWorld::menuInviteDialogCallback));
+	pInvite->setPosition(ccp(size.width/2 + 40, size.height - 480));
+
+	CCLabelTTF *textReq = CCLabelTTF::create("Show RequestDialog", "Thonburi", 50);
+	CCMenuItemLabel* pReq = CCMenuItemLabel::create(textReq, this, menu_selector(HelloWorld::menuRequestDialogCallback));
+	pReq->setPosition(ccp(size.width/2 + 40, size.height - 520));
 
 
 	CCLabelTTF *textLogout = CCLabelTTF::create("Logout User", "Thonburi", 50);
@@ -388,48 +451,14 @@ void HelloWorld::authorizeAuthorized(){
 	pMenu->addChild(pFri, 1002);
 	pMenu->addChild(pAch, 1003);
 	pMenu->addChild(pLea, 1004);
+	pMenu->addChild(pShare, 1005);
+	pMenu->addChild(pInvite, 1006);
+	pMenu->addChild(pReq, 1007);
 	pMenu->addChild(pLogout, 1010);
 
 	this->addChild(pMenu, 1);
 
 	authFlag = 1;
-
-
-	//test 
-	CCGreeInviteDialog *dialog1 = CCGreeInviteDialog::create();
-	if(dialog1 == NULL){
-		CCLog("+++++++++++++++++ Error ++++++++++");
-	}else{
-		CCDictionary *dict = CCDictionary::create();
-        CCArray *array = new CCArray();
-        array->addObject(new CCString("1000038120"));
-        array->addObject(new CCString("1000038121"));
-        dict->setObject(array, GD_INVITE_DIALOG_PARAM_KEY_TOUSERID);
-		dict->setObject(new CCString("TestInviteBody"), GD_INVITE_DIALOG_PARAM_KEY_BODY);
-		dialog1->setParams(dict);
-		dialog1->show();
-	}
-	#if 0
-	CCGreeRequestDialog *dialog2 = CCGreeRequestDialog::create();
-	if(dialog2 == NULL){
-		CCLog("+++++++++++++++++ Error ++++++++++");
-	}else{
-		CCDictionary *dict = CCDictionary::create();
-		dict->setObject(new CCString("1000020828"), GD_REQUEST_DIALOG_PARAM_KEY_TOUSERID);
-		dict->setObject(new CCString("TestRequest"), GD_REQUEST_DIALOG_PARAM_KEY_TITLE);
-		dialog2->setParams(dict);
-		dialog2->show();
-	}
-	CCGreeShareDialog *dialog3 = CCGreeShareDialog::create();
-	if(dialog3 == NULL){
-		CCLog("+++++++++++++++++ Error ++++++++++");
-	}else{
-		CCDictionary *dict = CCDictionary::create();
-		dict->setObject(new CCString("Share Message"), GD_SHARE_DIALOG_PARAM_KEY_MESSAGE);
-		dialog3->setParams(dict);
-		dialog3->show();
-	}
-	#endif
 	}
 }
 void HelloWorld::logoutLogouted(){
@@ -653,6 +682,52 @@ void HelloWorld::loadScoreThumbnailSuccess(CCGreeScore *score, CCImage *img)
 	showResult(&str2, &str1);
 }
 
+// Dialogs
+void HelloWorld::inviteDialogOpened(CCGreeInviteDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "inviteDialogOpened";
+    showResult(&str2, &str1);
+}
+void HelloWorld::inviteDialogCompleted(CCGreeInviteDialog *dialog, CCArray *userArray){
+    std::string str1 = "Callback";
+    std::string str2 = "inviteDialogCompleted";
+    showResult(&str2, &str1);
+}
+void HelloWorld::inviteDialogClosed(CCGreeInviteDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "inviteDialogClosed";
+    showResult(&str2, &str1);
+}
+void HelloWorld::requestDialogOpened(CCGreeRequestDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "requestDialogOpened";
+    showResult(&str2, &str1);
+}
+void HelloWorld::requestDialogCompleted(CCGreeRequestDialog *dialog, CCArray *userArray){
+    std::string str1 = "Callback";
+    std::string str2 = "requestDialogCompleted";
+    showResult(&str2, &str1);
+}
+void HelloWorld::requestDialogClosed(CCGreeRequestDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "RequestDialogClosed";
+    showResult(&str2, &str1);
+}
+void HelloWorld::shareDialogOpened(CCGreeShareDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "shareDialogOpened";
+    showResult(&str2, &str1);
+}
+void HelloWorld::shareDialogCompleted(CCGreeShareDialog *dialog, CCArray *userArray){
+    std::string str1 = "Callback";
+    std::string str2 = "shareDialogCompleted";
+    showResult(&str2, &str1);
+}
+void HelloWorld::shareDialogClosed(CCGreeShareDialog *dialog){
+    std::string str1 = "Callback";
+    std::string str2 = "shareDialogClosed";
+    showResult(&str2, &str1);
+}
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -728,7 +803,6 @@ bool HelloWorld::init()
 void HelloWorld::Func(float dt){
 	CCLog("++++++ %s", __func__);
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
-
 	// User Information
 	if(gThumbFlag == 1){
 		CCGreeUser *pUser = CCGreePlatform::getLocalUser();

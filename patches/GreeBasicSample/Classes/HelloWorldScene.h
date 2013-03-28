@@ -23,6 +23,9 @@ public:
 	void menuPaymentCallback(CCObject* pSender);
 	void menuAchievementCallback(CCObject* pSender);
 	void menuLeaderboardCallback(CCObject* pSender);
+	void menuShareDialogCallback(CCObject* pSender);
+	void menuInviteDialogCallback(CCObject* pSender);
+	void menuRequestDialogCallback(CCObject* pSender);
 	void menuCreateScoreCallback(CCObject* pSender);
 	void menuLockUnlockCallback(CCObject* pSender);
 	void menuLogoutCallback(CCObject* pSender);
@@ -87,6 +90,18 @@ public:
 	virtual void getScoreSuccess(CCGreeLeaderboard *leaderboard, CCArray *scoreArray);
 	virtual void getScoreFailure(CCGreeLeaderboard *leaderboard, int responseCode, CCString *response);
 	virtual void loadScoreThumbnailSuccess(CCGreeScore *score, CCImage *img);
+
+	// Dialogs
+    virtual void inviteDialogOpened(CCGreeInviteDialog *dialog);
+    virtual void inviteDialogCompleted(CCGreeInviteDialog *dialog, CCArray *userArray);
+    virtual void inviteDialogClosed(CCGreeInviteDialog *dialog);
+    virtual void requestDialogOpened(CCGreeRequestDialog *dialog);
+    virtual void requestDialogCompleted(CCGreeRequestDialog *dialog, CCArray *userArray);
+    virtual void requestDialogClosed(CCGreeRequestDialog *dialog);
+    virtual void shareDialogOpened(CCGreeShareDialog *dialog);
+    virtual void shareDialogCompleted(CCGreeShareDialog *dialog, CCArray *userArray);
+    virtual void shareDialogClosed(CCGreeShareDialog *dialog);
+
 
 private:
 	void dumpUserInfo(CCGreeUser *user);	

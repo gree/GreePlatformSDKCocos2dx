@@ -133,7 +133,7 @@ extern "C" {
 							i++;
 						}
 						m.env->CallObjectMethod(map, m.methodID, jStr, jarry);
-						t.env->DeleteLocalRef(jarry);
+						m.env->DeleteLocalRef(jarry);
 					}else if(!strncmp(GD_REQUEST_DIALOG_PARAM_KEY_ATTRS, pStr, sizeof(GD_REQUEST_DIALOG_PARAM_KEY_ATTRS))){
 					}
 					m.env->DeleteLocalRef(jStr);

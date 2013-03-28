@@ -9,7 +9,7 @@
 		<string>org.cocos2d-x.libcocos2dx</string>
 		<string>org.cocos2d-x.libcocosdenshion</string>
 		<string>org.cocos2d-x.libextensions</string>
-		<string>org.cocos2d-x.libgree_extension</string>
+		<string>org.cocos2d-x.libwebview_plugin</string>
 	</array>
 	<key>Concrete</key>
 	<true/>
@@ -56,39 +56,11 @@
 			<key>TargetIndices</key>
 			<array/>
 		</dict>
-		<key>Resources/gree.png</key>
-		<dict>
-			<key>Group</key>
-			<string>Resources</string>
-			<key>Path</key>
-			<string>Resources/gree.png</string>
-		</dict>
-		<key>Resources/user.png</key>
-		<dict>
-			<key>Group</key>
-			<string>Resources</string>
-			<key>Path</key>
-			<string>Resources/user.png</string>
-		</dict>
-		<key>Resources/friends.png</key>
-		<dict>
-			<key>Group</key>
-			<string>Resources</string>
-			<key>Path</key>
-			<string>Resources/friends.png</string>
-		</dict>
-		<key>Resources/payment.png</key>
-		<dict>
-			<key>Group</key>
-			<string>Resources</string>
-			<key>Path</key>
-			<string>Resources/payment.png</string>
-		</dict>
 	</dict>
 	<key>Description</key>
-	<string>This template provides a starting point for an application that uses cocos2d and GreePlatformSDK for iOS. It includes CocosDenshion, FontLabel and cocosLive.</string>
+	<string>This template provides a starting point for an application that uses cocos2d and WebView Plugin for iOS. It includes CocosDenshion, FontLabel and cocosLive.</string>
 	<key>Identifier</key>
-	<string>org.cocos2d-x.cocos2dxGreeExtensionIOSTemplate</string>
+	<string>org.cocos2d-x.cocos2dxWebViewPluginIOSTemplate</string>
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Nodes</key>
@@ -98,10 +70,6 @@
 		<string>Classes/AppDelegate.cpp</string>
 		<string>Classes/HelloWorldScene.h</string>
 		<string>Classes/HelloWorldScene.cpp</string>
-		<string>Resources/gree.png</string>
-		<string>Resources/user.png</string>
-		<string>Resources/friends.png</string>
-		<string>Resources/payment.png</string>
 	</array>
 	<key>Options</key>
 	<array>

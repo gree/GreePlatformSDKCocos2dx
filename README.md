@@ -39,3 +39,15 @@ and you can select cocos2dx gree_extension template from Xcode.
 	$sudo ./install-gree-templates-xcode.sh
 
 
+WebViewPlugin for Cocos2d-x:
+==========================================================
+Add webview_plugin module enables developers to use platform independent WebView function from Cocos2dx context.
+It works on Android and iOS.
+This is derived from the work done by keijiro-san on https://github.com/keijiro/unity-webview-integration.
+
+You can select whether you use one of GreePlatformSDK and WebViewPlugin, or both of them with setup.sh script.
+
+	$./setup.sh -m all  # prepare both of GreePlatformSDK and WebViewPlugin
+	$./setup.sh -m webview # only setup WebViewPlugin
+
+
