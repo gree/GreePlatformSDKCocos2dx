@@ -101,11 +101,11 @@ CCGreePaymentItem* CCGreePaymentItem::create(const char *itemId, const char *ite
                                                                        quantity:quantityInt
                                                                        imageUrl:nil
                                                                     description:nil];
-    if(pItem == nil){
-        return item;
+    if(pItem != nil){
+        item = new CCGreePaymentItem((void*)pItem);
+        item->autorelease();
     }
 
-    item = new CCGreePaymentItem((void*)pItem);
     return item;
 }
 
@@ -225,6 +225,8 @@ CCGreePayment* CCGreePayment::create(const char *message, CCArray *items){
 
     //payment = new CCGreePayment((void*)params);
     payment = new CCGreePayment((void*)params, NULL, NULL);
+    payment->autorelease();
+    payment->retain();
 
     return payment;
 }
@@ -250,6 +252,7 @@ CCArray* CCGreePayment::getPaymentItems(){
 void CCGreePayment::setCallbackUrl(const char *url){
     if(url != NULL && mPaymentObj != NULL){
         CCString *pUrl = new CCString(url);
+        pUrl->autorelease();
         CCDictionary *params = (CCDictionary *)mPaymentObj;
         params->setObject(pUrl, "url");
     }

@@ -7,11 +7,11 @@ using namespace cocos2d;
 NS_CC_GREE_EXT_BEGIN
 
 CCGreeUser::CCGreeUser(void *user){
-	mGreeUser = user;
+    mGreeUser = user;
 }
 
 CCGreeUser::~CCGreeUser(){
-	mGreeUser = NULL;
+    mGreeUser = NULL;
 }
 
 
@@ -204,6 +204,7 @@ bool CCGreeUser::loadThumbnail(int size){
             CGContextRelease(context);
             
             CCImage* img = new CCImage();
+            img->autorelease();
             img->initWithImageData((void *)rawData, width * height * 4, CCImage::kFmtRawData, width, height);
             CCGreeUserDelegate *delegate = CCGreePlatform::getUserDelegate();
             if(delegate != NULL){
@@ -233,7 +234,9 @@ void CCGreeUser::loadFriends(int offset, int count){
             CCArray *userArray = new CCArray();
             for(int i = 0; i < ((loadCount >= count) ? count : loadCount); i++){
                 //without retain, GreeUser object seems to be released on cocos2dx main thread.
-                userArray->addObject(new CCGreeUser((void*)([[items objectAtIndex : i] retain])));
+                CCGreeUser *user = new CCGreeUser((void*)([[items objectAtIndex : i] retain]));
+                user->autorelease();
+                userArray->addObject(user);
             }
             if(count > loadCount && [enumerator canLoadNext]){
                 //TODO : Load more cells

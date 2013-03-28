@@ -20,6 +20,8 @@ CCGreeInviteDialog* CCGreeInviteDialog::create(){
     CCGreeInviteDialog *dialog = NULL;
     if(invitePopup != nil){
         dialog = new CCGreeInviteDialog((void*)invitePopup);
+        dialog->autorelease();
+        dialog->retain();
     }
     return dialog;
 }
@@ -98,6 +100,7 @@ void CCGreeInviteDialog::show(){
                     }*/
                     CCString* ccStr = NULL;
                     ccStr = new CCString([idString UTF8String]);
+                    ccStr->autorelease();
                     arry->addObject(ccStr);
                 }
                 delegate->inviteDialogCompleted(this, arry);

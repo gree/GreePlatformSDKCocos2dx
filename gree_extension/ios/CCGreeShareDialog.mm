@@ -20,6 +20,8 @@ CCGreeShareDialog* CCGreeShareDialog::create(){
     CCGreeShareDialog *dialog = NULL;
     if(sharePopup != nil){
         dialog = new CCGreeShareDialog((void*)sharePopup);
+        dialog->autorelease();
+        dialog->retain();
     }
     return dialog;
 }
