@@ -63,6 +63,8 @@ void CCWebView::setRect(int x, int y, int w, int h){
     CGFloat scale = view.contentScaleFactor;
     frame.size.width = w / scale;
     frame.size.height = h / scale;
+    frame.origin.x = x / scale;
+    frame.origin.y = y / scale;
     UIWebView *uiView = (UIWebView*)mWebView;
     uiView.frame = frame;
 }
