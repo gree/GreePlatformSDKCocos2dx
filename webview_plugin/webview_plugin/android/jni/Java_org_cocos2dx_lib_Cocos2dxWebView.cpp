@@ -69,7 +69,8 @@ extern "C" {
 		jobject ret = NULL;
 		if(JniHelper::getMethodInfo(t, "org/cocos2dx/lib/gree/webview/Cocos2dxWebView", "<init>", "()V")){
 			ret = t.env->NewObject(t.classID, t.methodID);
-			t.env->DeleteLocalRef(t.classID);	
+			t.env->DeleteLocalRef(t.classID);
+            ret = t.env->NewGlobalRef(ret);
 		}
 		return ret;
 	}
@@ -132,6 +133,7 @@ extern "C" {
 		if(getInstanceMethodInfo(t, obj, "destroy", "()V")){
 			t.env->CallVoidMethod(obj, t.methodID);
 			t.env->DeleteLocalRef(t.classID);
+            t.env->DeleteGlobalRef(obj);
 		}
 	}
 
