@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 URL="http://cocos2d-x.googlecode.com/files/"
 TARGET="cocos2d-2.0-x-2.0.4"
@@ -52,7 +52,7 @@ fi
 
 echo ${URL}${TARGETFILE}
 
-function prepareGreePlatform() {
+function prepareGreePlatform {
 	echo "Prepare GreePlatformSDK";
 	# Prepare src tree for building Apps with GreePlatformSDK
 	rsync -a --delete ${EXTENSIONDIR} ${TARGET}
@@ -65,7 +65,7 @@ function prepareGreePlatform() {
 
 }
 
-function prepareWebView() {
+function prepareWebView {
 	echo "Prepare WebView";
 	rsync -a --delete ${WEBVIEWDIR} ${TARGET}
 	rsync -a --delete ${WEBVIEWJAVADIR} ${JAVADIR}/gree/
@@ -76,17 +76,17 @@ function prepareWebView() {
 	cp ${PATCHDIR}/${INSTALL_WEBVIEW_TEMPLATE_SCRIPT} ${TARGET}
 }
 
-function applyGreePatch() {
+function applyGreePatch {
 	echo "Apply patch for gree_extension"
 	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.patch
 }
 
-function applyAllPatch() {
+function applyAllPatch {
 	echo "Apply patch for gree_extension and webview_plugin"
 	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.all.patch
 }
 
-function applyWebViewPatch() {
+function applyWebViewPatch {
 	echo "Apply patch for webview_plugin"
 	patch -d ${TARGET} -p0 < ${PATCHDIR}/Cocos2dxHelper.java.webview.patch
 }
