@@ -1,6 +1,8 @@
 #include "CCWebView.h"
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxWebView.h"
 
+#include "CCEGLView.h"
+
 namespace cocos2d { namespace webview_plugin {
 
 CCWebViewDelegate *CCWebView::s_pWebViewDelegate = NULL;
@@ -14,7 +16,8 @@ CCWebView* CCWebView::create(){
 	CCWebView* webview = NULL;
 	if(obj != NULL){
 		webview = new CCWebView((void*)obj);
-		setJavascriptIfJni(obj, webview);	
+		setJavascriptIfJni(obj, webview);
+        setWebViewClientJni(obj, webview);
 		webview->autorelease();
 		webview->retain();
 	}
@@ -27,10 +30,11 @@ void CCWebView::loadUrl(const char* url){
 	}
 }
 
-void CCWebView::evaluateJS(const char* js){
+CCString* CCWebView::evaluateJS(const char* js){
 	if(mWebView != NULL){
 		evaluateJSJni((jobject)mWebView, js);
 	}
+    return NULL;
 }
 
 void CCWebView::setVisibility(bool enable){
@@ -41,7 +45,12 @@ void CCWebView::setVisibility(bool enable){
 
 void CCWebView::setRect(int x, int y, int w, int h){
 	if(mWebView != NULL){
-		setRectJni((jobject)mWebView, x, y, w, h);
+        CCSize designSize = CCEGLView::sharedOpenGLView()->getDesignResolutionSize();
+        CCSize frameSize = CCEGLView::sharedOpenGLView()->getFrameSize();
+
+        float scale = frameSize.width / designSize.width;
+        setRectJni((jobject)mWebView, scale * x, scale * (y + h / 2),
+                   scale * w, scale * h);
 	}
 }
 
@@ -51,7 +60,6 @@ void CCWebView::destroy(){
 	}
 }
 
-
 void CCWebView::handleCalledFromJS(const char *message){
 	CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
 	if(delegate != NULL){
@@ -59,6 +67,23 @@ void CCWebView::handleCalledFromJS(const char *message){
 		str->autorelease();
 		delegate->callbackFromJS(this, str);
 	}
+}
+    
+bool CCWebView::handleShouldOverrideUrlLoading(const char *url) {
+    CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
+    if (delegate != NULL) {
+        CCString *str = CCString::create(url);
+        return delegate->shouldOverrideUrlLoading(this, str);
+    }
+    return false;
+}
+    
+void CCWebView::handleOnPageFinished(const char *url) {
+    CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
+    if (delegate != NULL) {
+        CCString *str = CCString::create(url);
+        delegate->onPageFinished(this, str);
+    }
 }
 
 }} // End of namespae cocos2d::webview_plugin

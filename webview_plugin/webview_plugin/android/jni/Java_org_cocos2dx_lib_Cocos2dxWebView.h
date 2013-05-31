@@ -8,6 +8,7 @@ extern "C"
 {
     jobject createWebViewJni();
 	void setJavascriptIfJni(jobject obj, void *delegate);
+    void setWebViewClientJni(jobject obj, void *delegate);
 	void loadUrlJni(jobject obj, const char* url);
 	void evaluateJSJni(jobject obj, const char* js);
 	void setVisibilityJni(jobject obj, bool enable);
