@@ -144,6 +144,14 @@ extern "C" {
             t.env->DeleteGlobalRef(obj);
 		}
 	}
+    
+    void setBannerModeEnableJni(jobject obj, bool enable){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setBannerModeEnable", "(Z)V")){
+			t.env->CallVoidMethod(obj, t.methodID, enable);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
 
     // from Cocos2dxWebView
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeCalledFromJS(JNIEnv *env, jobject obj, jlong delegate, jstring message){

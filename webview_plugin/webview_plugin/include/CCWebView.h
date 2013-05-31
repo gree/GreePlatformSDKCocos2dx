@@ -43,8 +43,12 @@ class CCWebView : public CCObject {
 		void handleCalledFromJS(const char* message);
         bool handleShouldOverrideUrlLoading(const char* url);
         void handleOnPageFinished(const char* url);
+        // クリックした時、ブラウザを開くようにする
+        void setBannerModeEnable(bool enable);
 
+        // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);
+    
 	private:
 		CCWebView(void* obj);
 		void* mWebView;

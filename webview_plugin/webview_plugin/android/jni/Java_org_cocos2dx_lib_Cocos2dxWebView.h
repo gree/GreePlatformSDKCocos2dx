@@ -14,6 +14,7 @@ extern "C"
 	void setVisibilityJni(jobject obj, bool enable);
 	void setRectJni(jobject obj, int x, int y, int w, int h);
 	void destroyJni(jobject obj);
+    void setBannerModeEnableJni(jobject obj, bool enable);
 }
 #endif
 

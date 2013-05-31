@@ -7,6 +7,9 @@
     // store c++ instance information related to this delegate
     void *object;
 }
+
+@property (nonatomic, readwrite) BOOL bannerModeEnable;
+
 @end
 
 @implementation WebViewDelegate
@@ -14,6 +17,7 @@
 {
     self = [super init];
     object = delegate;
+    _bannerModeEnable = NO;
     return self;
 }
 
@@ -29,6 +33,10 @@
     }else{
         if (pDelegate != NULL) {
             return !pDelegate->handleShouldOverrideUrlLoading([url UTF8String]);
+        }
+        if (_bannerModeEnable) {
+            [[UIApplication sharedApplication] openURL:[request URL]];
+            return NO;
         }
         return YES;
     }
@@ -132,6 +140,13 @@ void CCWebView::handleOnPageFinished(const char* url) {
         CCString *str = CCString::create(url);
         return delegate->onPageFinished(this, str);
     }
+}
+    
+void CCWebView::setBannerModeEnable(bool enable)
+{
+    UIWebView* webview = (UIWebView *)mWebView;
+    WebViewDelegate* delegate = webview.delegate;
+    delegate.bannerModeEnable = enable;
 }
 
 }}

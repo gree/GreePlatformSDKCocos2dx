@@ -2,6 +2,7 @@
 #include "jni/Java_org_cocos2dx_lib_Cocos2dxWebView.h"
 
 #include "CCEGLView.h"
+#include "CCDirector.h"
 
 namespace cocos2d { namespace webview_plugin {
 
@@ -47,9 +48,8 @@ void CCWebView::setRect(int x, int y, int w, int h){
 	if(mWebView != NULL){
         CCSize designSize = CCEGLView::sharedOpenGLView()->getDesignResolutionSize();
         CCSize frameSize = CCEGLView::sharedOpenGLView()->getFrameSize();
-
         float scale = frameSize.width / designSize.width;
-        setRectJni((jobject)mWebView, scale * x, scale * (y + h / 2),
+        setRectJni((jobject)mWebView, scale * x, 1 + scale * y + (frameSize.height - designSize.height * scale) / 2,
                    scale * w, scale * h);
 	}
 }
@@ -83,6 +83,12 @@ void CCWebView::handleOnPageFinished(const char *url) {
     if (delegate != NULL) {
         CCString *str = CCString::create(url);
         delegate->onPageFinished(this, str);
+    }
+}
+    
+void CCWebView::setBannerModeEnable(bool enable) {
+    if (mWebView != NULL) {
+        setBannerModeEnableJni((jobject)mWebView, enable);
     }
 }
 
