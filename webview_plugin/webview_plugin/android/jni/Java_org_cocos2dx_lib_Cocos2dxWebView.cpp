@@ -81,6 +81,14 @@ extern "C" {
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
+    
+    void setWebViewClientJni(jobject obj, void *delegate){
+        JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setWebViewClient", "(J)V")){
+			t.env->CallVoidMethod(obj, t.methodID, delegate);
+			t.env->DeleteLocalRef(t.classID);
+		}
+    }
 
 	void loadUrlJni(jobject obj, const char *url){
 		JniMethodInfo t;
@@ -136,15 +144,43 @@ extern "C" {
             t.env->DeleteGlobalRef(obj);
 		}
 	}
+    
+    void setBannerModeEnableJni(jobject obj, bool enable){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setBannerModeEnable", "(Z)V")){
+			t.env->CallVoidMethod(obj, t.methodID, enable);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
 
     // from Cocos2dxWebView
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeCalledFromJS(JNIEnv *env, jobject obj, jlong delegate, jstring message){
         if(delegate){
-            const char* str = env->GetStringUTFChars(message, 0); 
+            const char* str = env->GetStringUTFChars(message, 0);
             CCWebView *webView = (CCWebView*)delegate; 
             webView->handleCalledFromJS(str);
             env->ReleaseStringUTFChars(message, str);
         }
     }
-}
+    
+    JNIEXPORT bool JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeShouldOverrideUrlLoading(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        bool ret = false;
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            ret = webView->handleShouldOverrideUrlLoading(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+        return ret; //ret;
+    }
+    
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeOnPageFinished(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            webView->handleOnPageFinished(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+    }
 
+}
