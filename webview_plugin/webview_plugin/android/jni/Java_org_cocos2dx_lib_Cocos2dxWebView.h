@@ -15,6 +15,8 @@ extern "C"
 	void setRectJni(jobject obj, int x, int y, int w, int h);
 	void destroyJni(jobject obj);
     void setBannerModeEnableJni(jobject obj, bool enable);
+    void setCloseButtonJni(jobject obj, void* delegate, const char* imageName,
+                           int x, int y, int w, int h);
 }
 #endif
 

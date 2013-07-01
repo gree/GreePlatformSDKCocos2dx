@@ -152,6 +152,16 @@ extern "C" {
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
+    
+    void setCloseButtonJni(jobject obj, void* delegate, const char* imageName,
+                           int x, int y, int w, int h){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setCloseButton", "(Ljava/lang/String;IIII)V")){
+            jstring jName = t.env->NewStringUTF(imageName);
+			t.env->CallVoidMethod(obj, t.methodID, jName, x, y, w, h);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
 
     // from Cocos2dxWebView
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeCalledFromJS(JNIEnv *env, jobject obj, jlong delegate, jstring message){
@@ -182,5 +192,14 @@ extern "C" {
             env->ReleaseStringUTFChars(url, str);
         }
     }
-
+    
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeOnLoadError(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            webView->handleOnLoadError(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+    }
+    
 }

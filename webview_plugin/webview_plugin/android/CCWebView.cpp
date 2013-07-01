@@ -3,6 +3,7 @@
 
 #include "CCEGLView.h"
 #include "CCDirector.h"
+#include "CCFileUtils.h"
 
 namespace cocos2d { namespace webview_plugin {
 
@@ -86,9 +87,27 @@ void CCWebView::handleOnPageFinished(const char *url) {
     }
 }
     
+void CCWebView::handleOnLoadError(const char *url) {
+    CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
+    if (delegate != NULL) {
+        CCString *str = CCString::create(url);
+        delegate->onLoadError(this, str);
+    }
+}
+    
 void CCWebView::setBannerModeEnable(bool enable) {
     if (mWebView != NULL) {
         setBannerModeEnableJni((jobject)mWebView, enable);
+    }
+}
+    
+void CCWebView::setCloseButton(const char* imageName, int x, int y, int w, int h) {
+    if (mWebView != NULL) {
+        std::string imagePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageName);
+        CCSize designSize = CCEGLView::sharedOpenGLView()->getDesignResolutionSize();
+        CCSize frameSize = CCEGLView::sharedOpenGLView()->getFrameSize();
+        float scale = frameSize.width / designSize.width;
+        setCloseButtonJni((jobject)mWebView, this, imagePath.c_str(), scale * x, 1 + scale * y + (frameSize.height - designSize.height * scale) / 2, scale * w, scale * h);
     }
 }
 

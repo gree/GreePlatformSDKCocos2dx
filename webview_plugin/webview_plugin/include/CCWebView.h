@@ -26,6 +26,7 @@ class CCWebViewDelegate {
 		virtual void callbackFromJS(CCWebView* webview, CCString* message){};
         virtual bool shouldOverrideUrlLoading(CCWebView* webview, CCString* url){return false;};
 		virtual void onPageFinished(CCWebView* webview, CCString* url){};
+        virtual void onLoadError(CCWebView* webview, CCString* url){};
 };
 
 class CCWebView : public CCObject {
@@ -43,8 +44,10 @@ class CCWebView : public CCObject {
 		void handleCalledFromJS(const char* message);
         bool handleShouldOverrideUrlLoading(const char* url);
         void handleOnPageFinished(const char* url);
+        void handleOnLoadError(const char* url);
         // クリックした時、ブラウザを開くようにする
         void setBannerModeEnable(bool enable);
+        void setCloseButton(const char* imagePath, int x, int y, int w, int h);
 
         // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);
@@ -52,6 +55,7 @@ class CCWebView : public CCObject {
 	private:
 		CCWebView(void* obj);
 		void* mWebView;
+        void* mCloseButton;
 };
 
 }} // End of namespace cocos2d::webview_plugin
