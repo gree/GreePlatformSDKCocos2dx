@@ -1,6 +1,31 @@
 #import "CCWebView.h"
 
 #import "EAGLView.h"
+#import "CCFileUtils.h"
+
+@interface UIWebViewWithCloseHandler : UIWebView
+{
+    void *_ccWebView;
+}
+- (void)setCCWebView:(void*) ccWebView;
+- (void)closeWebView;
+@end
+
+@implementation UIWebViewWithCloseHandler
+
+- (void)setCCWebView:(void *)webView
+{
+    _ccWebView = webView;
+}
+
+- (void)closeWebView
+{
+    if (_ccWebView) {
+        ((cocos2d::webview_plugin::CCWebView*)_ccWebView)->destroy();
+    }
+}
+
+@end
 
 @interface WebViewDelegate : NSObject<UIWebViewDelegate>
 {
@@ -51,6 +76,15 @@
     }
 }
 
+-(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    cocos2d::webview_plugin::CCWebView *pDelegate = (cocos2d::webview_plugin::CCWebView *)object;
+    if (pDelegate != NULL) {
+        NSString* url = [[[webView request] URL] absoluteString];
+        pDelegate->handleOnLoadError([url UTF8String]);
+    }
+}
+
 @end
 
 namespace cocos2d { namespace webview_plugin {
@@ -59,12 +93,13 @@ CCWebViewDelegate *CCWebView::s_pWebViewDelegate = NULL;
 
 CCWebView::CCWebView(void *obj){
     mWebView = obj;
+    mCloseButton = NULL;
 }
 
 CCWebView* CCWebView::create(){
     CCWebView *webview = NULL;
     UIView *view = [EAGLView sharedEGLView];
-    UIWebView *uiView = [[UIWebView alloc] init];
+    UIWebViewWithCloseHandler *uiView = [[UIWebViewWithCloseHandler alloc] init];
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsPortrait(orientation)){
         uiView.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
@@ -75,6 +110,7 @@ CCWebView* CCWebView::create(){
     [view addSubview:uiView];
     webview = new CCWebView((void*)uiView);
     webview->autorelease();
+    [uiView setCCWebView:webview];
     
     uiView.delegate = (id<UIWebViewDelegate>)[[WebViewDelegate alloc] initWithDelegate:(void *)webview];
     return webview;
@@ -99,6 +135,10 @@ void CCWebView::loadUrl(const char *url){
 void CCWebView::setVisibility(bool enable){
     UIWebView *uiView = (UIWebView*)mWebView;
     uiView.hidden = enable ? NO : YES;
+    if (mCloseButton) {
+        UIView* button = (UIView*)mCloseButton;
+        button.hidden = uiView.hidden;
+    }
 }
 
 CCString* CCWebView::evaluateJS(const char* js){
@@ -109,11 +149,20 @@ CCString* CCWebView::evaluateJS(const char* js){
 }
 
 void CCWebView::destroy(){
-    UIWebView *uiView = (UIWebView*)mWebView;
-    WebViewDelegate *delegate = uiView.delegate;
-    [delegate release];
-    [uiView removeFromSuperview];
-    [uiView release];
+    if (mWebView) {
+        UIWebView *uiView = (UIWebView*)mWebView;
+        WebViewDelegate *delegate = uiView.delegate;
+        [delegate release];
+        [uiView removeFromSuperview];
+        [uiView release];
+        mWebView = NULL;
+    }
+    if (mCloseButton) {
+        UIView* button = (UIView*)mCloseButton;
+        [button removeFromSuperview];
+        [button release];
+        mCloseButton = NULL;
+    }
 }
 
 void CCWebView::handleCalledFromJS(const char *message){
@@ -141,6 +190,15 @@ void CCWebView::handleOnPageFinished(const char* url) {
         return delegate->onPageFinished(this, str);
     }
 }
+
+void CCWebView::handleOnLoadError(const char* url) {
+    CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
+    if (delegate) {
+        CCString *str = CCString::create(url);
+        return delegate->onLoadError(this, str);
+    }
+}
+
     
 void CCWebView::setBannerModeEnable(bool enable)
 {
@@ -148,6 +206,35 @@ void CCWebView::setBannerModeEnable(bool enable)
     WebViewDelegate* delegate = webview.delegate;
     delegate.bannerModeEnable = enable;
 }
+    
+    
+    
+    void CCWebView::setCloseButton(const char * imageName, int x, int y, int w, int h)
+    {
+        UIView* uiView = [EAGLView sharedEGLView];
+        UIWebViewWithCloseHandler *webView = (UIWebViewWithCloseHandler*)mWebView;
+        CGFloat frameHeight = uiView.frame.size.height;
+        
+        std::string imagePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageName);
+        
+        UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage* image = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithUTF8String:imagePath.c_str()]];
+        [button setImage:image forState:UIControlStateNormal];
+        [image release];
+        [button addTarget:webView action:@selector(closeWebView) forControlEvents:UIControlEventTouchUpInside];
+        
+        button.frame = CGRectMake(x, frameHeight - y - h, w, h);
+        if (mCloseButton) {
+            UIView* view = (UIView*)mCloseButton;
+            [view removeFromSuperview];
+            [view release];
+        }
+        [button retain];
+        button.hidden = webView.hidden;
+        mCloseButton = button;
+        
+        [uiView addSubview:button];
+    }
 
 }}
 
