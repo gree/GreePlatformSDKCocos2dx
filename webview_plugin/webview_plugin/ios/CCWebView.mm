@@ -107,6 +107,7 @@ CCWebView* CCWebView::create(){
         uiView.frame = CGRectMake(0, 0, view.frame.size.height, view.frame.size.width);
     }
     uiView.hidden = YES;
+    uiView.dataDetectorTypes = UIDataDetectorTypeNone;
     [view addSubview:uiView];
     webview = new CCWebView((void*)uiView);
     webview->autorelease();
