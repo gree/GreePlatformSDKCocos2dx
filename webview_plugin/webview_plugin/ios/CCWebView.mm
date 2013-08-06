@@ -2,6 +2,7 @@
 
 #import "EAGLView.h"
 #import "CCFileUtils.h"
+#import "CCEGLView.h"
 
 @interface UIWebViewWithCloseHandler : UIWebView
 {
@@ -101,6 +102,7 @@ CCWebView* CCWebView::create(){
     UIView *view = [EAGLView sharedEGLView];
     UIWebViewWithCloseHandler *uiView = [[UIWebViewWithCloseHandler alloc] init];
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
     if(UIInterfaceOrientationIsPortrait(orientation)){
         uiView.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
     }else{
@@ -117,12 +119,17 @@ CCWebView* CCWebView::create(){
     return webview;
 }
 
-void CCWebView::setRect(int x, int y, int w, int h){
+inline CGRect getRectForIOS(int x, int y, int w, int h) {
     UIView *view = [EAGLView sharedEGLView];
-    CGRect frame = view.frame;
-    CGFloat frameHeight = frame.size.height;
+    CCSize designSize = CCEGLView::sharedOpenGLView()->getDesignResolutionSize();
+    CGFloat frameHeight = view.frame.size.height;
+    CGFloat offset = (frameHeight - designSize.height) / 2;
+    return CGRectMake(x, frameHeight - y - h - offset, w, h);
+}
+    
+void CCWebView::setRect(int x, int y, int w, int h){
     UIWebView *uiView = (UIWebView*)mWebView;
-    uiView.frame = CGRectMake(x, frameHeight - y - h, w, h);
+    uiView.frame = getRectForIOS(x, y, w, h);
 }
 
 void CCWebView::loadUrl(const char *url){
@@ -214,7 +221,6 @@ void CCWebView::setBannerModeEnable(bool enable)
     {
         UIView* uiView = [EAGLView sharedEGLView];
         UIWebViewWithCloseHandler *webView = (UIWebViewWithCloseHandler*)mWebView;
-        CGFloat frameHeight = uiView.frame.size.height;
         
         std::string imagePath = CCFileUtils::sharedFileUtils()->fullPathForFilename(imageName);
         
@@ -224,7 +230,7 @@ void CCWebView::setBannerModeEnable(bool enable)
         [image release];
         [button addTarget:webView action:@selector(closeWebView) forControlEvents:UIControlEventTouchUpInside];
         
-        button.frame = CGRectMake(x, frameHeight - y - h, w, h);
+        button.frame = getRectForIOS(x, y, w, h);
         if (mCloseButton) {
             UIView* view = (UIView*)mCloseButton;
             [view removeFromSuperview];
