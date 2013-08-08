@@ -33,6 +33,7 @@ class CCWebView : public CCObject {
 	public:
 		static CCWebView* create();
 		void loadUrl(const char* url);
+        void loadHtml(const char *filepath, bool transparent = false);
     
         // AndroidとiOSでJS実行の仕様が異なる。
         // iOSはCCStringを返すが、Androidではwindow.Cocos2dx.call(%s)でdelegate経由で結果を受け取る

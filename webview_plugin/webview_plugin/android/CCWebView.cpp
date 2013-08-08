@@ -32,6 +32,19 @@ void CCWebView::loadUrl(const char* url){
 	}
 }
 
+void CCWebView::loadHtml(const char *filepath, bool transparent = false){
+	if(mWebView != NULL){
+        const char* base = "file:///android_asset/";
+        int len = strlen(base) + strlen(filepath);
+        char* buffer = (char*)malloc(len);
+        if(buffer) {
+            sprintf(buffer, "%s%s", base, filepath);
+            loadUrlJni((jobject)mWebView, buffer);
+            free(buffer);
+        }
+	}
+}
+
 CCString* CCWebView::evaluateJS(const char* js){
 	if(mWebView != NULL){
 		evaluateJSJni((jobject)mWebView, js);
