@@ -90,16 +90,16 @@ extern "C" {
 		}
     }
 
-	void loadUrlJni(jobject obj, const char *url){
+	void loadUrlJni(jobject obj, const char *url, bool transparent){
 		JniMethodInfo t;
-		if(getInstanceMethodInfo(t, obj, "loadURL", "(Ljava/lang/String;)V")){
+		if(getInstanceMethodInfo(t, obj, "loadURL", "(Ljava/lang/String;Z)V")){
 			jstring jUrl;
 			if(!url){
 				jUrl = t.env->NewStringUTF("");
 			}else{
 				jUrl = t.env->NewStringUTF(url);
 			}
-			t.env->CallVoidMethod(obj, t.methodID, jUrl);
+			t.env->CallVoidMethod(obj, t.methodID, jUrl, transparent);
 			t.env->DeleteLocalRef(jUrl);
 			t.env->DeleteLocalRef(t.classID);
 		}

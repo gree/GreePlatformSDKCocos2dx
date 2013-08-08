@@ -28,20 +28,19 @@ CCWebView* CCWebView::create(){
 
 void CCWebView::loadUrl(const char* url){
 	if(mWebView != NULL){
-		loadUrlJni((jobject)mWebView, url);
+		loadUrlJni((jobject)mWebView, url, false);
 	}
 }
 
-void CCWebView::loadHtml(const char *filepath, bool transparent = false){
+void CCWebView::loadHtml(const char *filepath, bool transparent/* =false */){
 	if(mWebView != NULL){
         const char* base = "file:///android_asset/";
-        int len = strlen(base) + strlen(filepath);
-        char* buffer = (char*)malloc(len);
-        if(buffer) {
-            sprintf(buffer, "%s%s", base, filepath);
-            loadUrlJni((jobject)mWebView, buffer);
-            free(buffer);
-        }
+        const char* suffix = ".html";
+        int len = strlen(base) + strlen(filepath) + strlen(suffix);
+        char* buffer = new char[len];
+        sprintf(buffer, "%s%s%s", base, filepath, suffix);
+        loadUrlJni((jobject)mWebView, buffer, transparent);
+        delete [] buffer;
 	}
 }
 
