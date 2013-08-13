@@ -32,7 +32,7 @@ class CCWebViewDelegate {
 class CCWebView : public CCObject {
 	public:
 		static CCWebView* create();
-		void loadUrl(const char* url);
+		void loadUrl(const char* url, bool transparent = false);
         void loadHtml(const char *filepath, bool transparent = false);
     
         // AndroidとiOSでJS実行の仕様が異なる。

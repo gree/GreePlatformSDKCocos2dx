@@ -26,9 +26,9 @@ CCWebView* CCWebView::create(){
 	return webview;
 }
 
-void CCWebView::loadUrl(const char* url){
+void CCWebView::loadUrl(const char* url, bool transparent/* =false */){
 	if(mWebView != NULL){
-		loadUrlJni((jobject)mWebView, url, false);
+		loadUrlJni((jobject)mWebView, url, transparent);
 	}
 }
 

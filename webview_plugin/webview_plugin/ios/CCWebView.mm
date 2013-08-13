@@ -132,11 +132,15 @@ void CCWebView::setRect(int x, int y, int w, int h){
     uiView.frame = getRectForIOS(x, y, w, h);
 }
 
-void CCWebView::loadUrl(const char *url){
+void CCWebView::loadUrl(const char *url, bool transparent/* =false */){
     NSString *nsStr = NSLocalizedString([[NSString alloc] initWithUTF8String:url], @"Url");
     NSURL *nsUrl = [NSURL URLWithString:nsStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:nsUrl];
     UIWebView *uiView = (UIWebView*)mWebView;
+    if (transparent) {
+        [uiView setBackgroundColor:[UIColor clearColor]];
+        [uiView setOpaque:NO];
+    }
     [uiView loadRequest:request];
 }
 
