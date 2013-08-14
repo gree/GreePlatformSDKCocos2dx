@@ -194,8 +194,9 @@ public class Cocos2dxWebView {
     	if(sContext != null && mWebView != null){
     		final Activity a = (Activity)sContext;
     		a.runOnUiThread(new Runnable() {public void run() {
+                WebSettings settings = mWebView.getSettings();
+                settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 				if(transparent) {
-					WebSettings settings = mWebView.getSettings();
 				    settings.setDefaultTextEncodingName("utf-8");
 				    mWebView.setBackgroundColor(Color.argb(1, 255, 255, 255));
 					mWebView.setBackgroundDrawable(null);
@@ -207,6 +208,15 @@ public class Cocos2dxWebView {
 //					}
 				}
     			mWebView.loadUrl(url);
+    		}});
+    	}
+    }
+    public void clearCache()
+    {
+    	if(sContext != null && mWebView != null){
+    		final Activity a = (Activity)sContext;
+    		a.runOnUiThread(new Runnable() {public void run() {
+                mWebView.clearCache(true);
     		}});
     	}
     }

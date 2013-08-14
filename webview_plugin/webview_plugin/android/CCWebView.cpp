@@ -44,6 +44,12 @@ void CCWebView::loadHtml(const char *filepath, bool transparent/* =false */){
 	}
 }
 
+void CCWebView::clearCache(){
+	if(mWebView != NULL){
+        clearCacheJni((jobject)mWebView);
+    }
+}
+    
 CCString* CCWebView::evaluateJS(const char* js){
 	if(mWebView != NULL){
 		evaluateJSJni((jobject)mWebView, js);

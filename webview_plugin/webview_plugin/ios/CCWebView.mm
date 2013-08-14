@@ -136,6 +136,7 @@ void CCWebView::loadUrl(const char *url, bool transparent/* =false */){
     NSString *nsStr = NSLocalizedString([[NSString alloc] initWithUTF8String:url], @"Url");
     NSURL *nsUrl = [NSURL URLWithString:nsStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:nsUrl];
+
     UIWebView *uiView = (UIWebView*)mWebView;
     if (transparent) {
         [uiView setBackgroundColor:[UIColor clearColor]];
@@ -156,6 +157,10 @@ void CCWebView::loadHtml(const char *filepath, bool transparent/* =false */){
     [uiView loadRequest:request];
 }
 
+void CCWebView::clearCache(){
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+    
 void CCWebView::setVisibility(bool enable){
     UIWebView *uiView = (UIWebView*)mWebView;
     uiView.hidden = enable ? NO : YES;

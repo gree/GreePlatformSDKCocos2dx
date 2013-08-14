@@ -105,6 +105,15 @@ extern "C" {
 		}
 	}
 
+    void clearCacheJni(jobject obj){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "clearCache", "()V")){
+			t.env->CallVoidMethod(obj, t.methodID);
+			t.env->DeleteLocalRef(t.classID);
+            t.env->DeleteGlobalRef(obj);
+		}
+	}
+
 	void evaluateJSJni(jobject obj, const char *js){
 		JniMethodInfo t;
 		if(getInstanceMethodInfo(t, obj, "evaluateJS", "(Ljava/lang/String;)V")){
