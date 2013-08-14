@@ -110,7 +110,6 @@ extern "C" {
 		if(getInstanceMethodInfo(t, obj, "clearCache", "()V")){
 			t.env->CallVoidMethod(obj, t.methodID);
 			t.env->DeleteLocalRef(t.classID);
-            t.env->DeleteGlobalRef(obj);
 		}
 	}
 
