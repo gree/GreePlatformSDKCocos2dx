@@ -88,6 +88,43 @@
 
 @end
 
+
+@interface ScrollViewDelegate : NSObject<UIScrollViewDelegate>
+{
+    // store c++ instance information related to this delegate
+    void *object;
+}
+
+@end
+
+
+/* This delegate forbidens x-direction scroll */
+@implementation ScrollViewDelegate
+
+-(id)initWithDelegate:(void *)delegate
+{
+    self = [super init];
+    object = delegate;
+    return self;
+}
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    return YES;
+}
+
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+{
+}
+
+- (void)scrollViewDidScroll:(id)scrollView
+{
+    CGPoint origin = [scrollView contentOffset];
+    [scrollView setContentOffset:CGPointMake(0.0, origin.y)];
+}
+@end
+
+
+
 namespace cocos2d { namespace webview_plugin {
 
 CCWebViewDelegate *CCWebView::s_pWebViewDelegate = NULL;
@@ -116,6 +153,12 @@ CCWebView* CCWebView::create(){
     [uiView setCCWebView:webview];
     
     uiView.delegate = (id<UIWebViewDelegate>)[[WebViewDelegate alloc] initWithDelegate:(void *)webview];
+    
+    // Forbidden X-direction scroll
+    if(uiView.scrollView){
+        uiView.scrollView.delegate = (id<UIScrollViewDelegate>)[[ScrollViewDelegate alloc] initWithDelegate:(void *)webview];
+    }
+
     // Hide Border (for iPad)
     for (UIView *view in [[[uiView subviews] objectAtIndex:0] subviews]) {
         if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
@@ -207,6 +250,11 @@ CCString* CCWebView::evaluateJS(const char* js){
 void CCWebView::destroy(){
     if (mWebView) {
         UIWebView *uiView = (UIWebView*)mWebView;
+        if(uiView.scrollView){
+            ScrollViewDelegate *scrollViewDelegate =  uiView.scrollView.delegate;
+            uiView.scrollView.delegate = nil;
+            [scrollViewDelegate release];
+        }
         WebViewDelegate *delegate = uiView.delegate;
         [delegate release];
         [uiView removeFromSuperview];
