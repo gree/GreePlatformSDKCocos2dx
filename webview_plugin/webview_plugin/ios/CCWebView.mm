@@ -116,6 +116,11 @@ CCWebView* CCWebView::create(){
     [uiView setCCWebView:webview];
     
     uiView.delegate = (id<UIWebViewDelegate>)[[WebViewDelegate alloc] initWithDelegate:(void *)webview];
+    // Hide Border (for iPad)
+    for (UIView *view in [[[uiView subviews] objectAtIndex:0] subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+    }
+    
     return webview;
 }
     
