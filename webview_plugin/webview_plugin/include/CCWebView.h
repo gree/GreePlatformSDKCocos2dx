@@ -24,23 +24,40 @@ class CCWebView;
 class CCWebViewDelegate {
 	public:
 		virtual void callbackFromJS(CCWebView* webview, CCString* message){};
+        virtual bool shouldOverrideUrlLoading(CCWebView* webview, CCString* url){return false;};
+		virtual void onPageFinished(CCWebView* webview, CCString* url){};
+        virtual void onLoadError(CCWebView* webview, CCString* url){};
 };
 
 class CCWebView : public CCObject {
 	public:
 		static CCWebView* create();
-		void loadUrl(const char* url);
-		void evaluateJS(const char* js);
+		void loadUrl(const char* url, bool transparent = false);
+        void loadHtml(const char *filepath, bool transparent = false);
+        void clearCache();
+    
+        // AndroidとiOSでJS実行の仕様が異なる。
+        // iOSはCCStringを返すが、Androidではwindow.Cocos2dx.call(%s)でdelegate経由で結果を受け取る
+		CCString* evaluateJS(const char* js);
 		void setVisibility(bool enable);
 		void setRect(int x, int y, int w, int h);
 		void destroy();
 
 		void handleCalledFromJS(const char* message);
+        bool handleShouldOverrideUrlLoading(const char* url);
+        void handleOnPageFinished(const char* url);
+        void handleOnLoadError(const char* url);
+        // クリックした時、ブラウザを開くようにする
+        void setBannerModeEnable(bool enable);
+        void setCloseButton(const char* imagePath, int x, int y, int w, int h);
 
+        // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);
+    
 	private:
 		CCWebView(void* obj);
 		void* mWebView;
+        void* mCloseButton;
 };
 
 }} // End of namespace cocos2d::webview_plugin

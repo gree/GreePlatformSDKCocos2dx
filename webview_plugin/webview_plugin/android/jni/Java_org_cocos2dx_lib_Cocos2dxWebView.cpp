@@ -69,7 +69,8 @@ extern "C" {
 		jobject ret = NULL;
 		if(JniHelper::getMethodInfo(t, "org/cocos2dx/lib/gree/webview/Cocos2dxWebView", "<init>", "()V")){
 			ret = t.env->NewObject(t.classID, t.methodID);
-			t.env->DeleteLocalRef(t.classID);	
+			t.env->DeleteLocalRef(t.classID);
+            ret = t.env->NewGlobalRef(ret);
 		}
 		return ret;
 	}
@@ -80,18 +81,34 @@ extern "C" {
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
+    
+    void setWebViewClientJni(jobject obj, void *delegate){
+        JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setWebViewClient", "(J)V")){
+			t.env->CallVoidMethod(obj, t.methodID, delegate);
+			t.env->DeleteLocalRef(t.classID);
+		}
+    }
 
-	void loadUrlJni(jobject obj, const char *url){
+	void loadUrlJni(jobject obj, const char *url, bool transparent){
 		JniMethodInfo t;
-		if(getInstanceMethodInfo(t, obj, "loadURL", "(Ljava/lang/String;)V")){
+		if(getInstanceMethodInfo(t, obj, "loadURL", "(Ljava/lang/String;Z)V")){
 			jstring jUrl;
 			if(!url){
 				jUrl = t.env->NewStringUTF("");
 			}else{
 				jUrl = t.env->NewStringUTF(url);
 			}
-			t.env->CallVoidMethod(obj, t.methodID, jUrl);
+			t.env->CallVoidMethod(obj, t.methodID, jUrl, transparent);
 			t.env->DeleteLocalRef(jUrl);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
+
+    void clearCacheJni(jobject obj){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "clearCache", "()V")){
+			t.env->CallVoidMethod(obj, t.methodID);
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
@@ -132,17 +149,65 @@ extern "C" {
 		if(getInstanceMethodInfo(t, obj, "destroy", "()V")){
 			t.env->CallVoidMethod(obj, t.methodID);
 			t.env->DeleteLocalRef(t.classID);
+            t.env->DeleteGlobalRef(obj);
+		}
+	}
+    
+    void setBannerModeEnableJni(jobject obj, bool enable){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setBannerModeEnable", "(Z)V")){
+			t.env->CallVoidMethod(obj, t.methodID, enable);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
+    
+    void setCloseButtonJni(jobject obj, void* delegate, const char* imageName,
+                           int x, int y, int w, int h){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setCloseButton", "(Ljava/lang/String;IIII)V")){
+            jstring jName = t.env->NewStringUTF(imageName);
+			t.env->CallVoidMethod(obj, t.methodID, jName, x, y, w, h);
+			t.env->DeleteLocalRef(t.classID);
 		}
 	}
 
     // from Cocos2dxWebView
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeCalledFromJS(JNIEnv *env, jobject obj, jlong delegate, jstring message){
         if(delegate){
-            const char* str = env->GetStringUTFChars(message, 0); 
+            const char* str = env->GetStringUTFChars(message, 0);
             CCWebView *webView = (CCWebView*)delegate; 
             webView->handleCalledFromJS(str);
             env->ReleaseStringUTFChars(message, str);
         }
     }
+    
+    JNIEXPORT bool JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeShouldOverrideUrlLoading(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        bool ret = false;
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            ret = webView->handleShouldOverrideUrlLoading(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+        return ret; //ret;
+    }
+    
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeOnPageFinished(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            webView->handleOnPageFinished(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+    }
+    
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeOnLoadError(JNIEnv *env, jobject obj, jlong delegate, jstring url){
+        if (delegate) {
+            const char* str = env->GetStringUTFChars(url, 0);
+            CCWebView *webView = (CCWebView*)delegate;
+            webView->handleOnLoadError(str);
+            env->ReleaseStringUTFChars(url, str);
+        }
+    }
+    
 }
-

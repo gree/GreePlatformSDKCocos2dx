@@ -14,9 +14,10 @@ LOCAL_WHOLE_STATIC_LIBRARIES := cocos2dx_static
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../include
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../cocos2dx \
-							$(LOCAL_PATH)/../../cocos2dx/include \
-							$(LOCAL_PATH)/../../cocos2dx/platform/android \
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../../cocos2d-x/cocos2dx \
+							$(LOCAL_PATH)/../../../../cocos2d-x/cocos2dx/include \
+							$(LOCAL_PATH)/../../../../cocos2d-x/cocos2dx/platform \
+							$(LOCAL_PATH)/../../../../cocos2d-x/cocos2dx/platform/android \
 							$(LOCAL_PATH)/../include \
 							$(LOCAL_PATH)/ \
 							$(LOCAL_PATH)/jni
