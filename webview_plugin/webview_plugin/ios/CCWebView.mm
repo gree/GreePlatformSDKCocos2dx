@@ -151,6 +151,7 @@ inline CGRect getRectForIOS(int x, int y, int w, int h) {
 void CCWebView::setRect(int x, int y, int w, int h){
     UIWebView *uiView = (UIWebView*)mWebView;
     uiView.frame = getRectForIOS(x, y, w, h);
+    uiView.scalesPageToFit = YES;
 }
 
 void CCWebView::loadUrl(const char *url, bool transparent/* =false */){
@@ -234,6 +235,13 @@ bool CCWebView::handleShouldOverrideUrlLoading(const char* url) {
 }
     
 void CCWebView::handleOnPageFinished(const char* url) {
+    UIWebView *uiView = (UIWebView*)mWebView;
+    
+    //adjust width (for iPad)
+    if(uiView.scrollView){
+        [uiView.scrollView setZoomScale:(uiView.frame.size.width/ uiView.scrollView.contentSize.width) animated:NO];
+    }
+    
     CCWebViewDelegate *delegate = CCWebView::getWebViewDelegate();
     if (delegate) {
         CCString *str = CCString::create(url);
