@@ -18,6 +18,7 @@ extern "C"
     void setBannerModeEnableJni(jobject obj, bool enable);
     void setCloseButtonJni(jobject obj, void* delegate, const char* imageName,
                            int x, int y, int w, int h);
+    void setUrlSchemeNotFoundMessageJni(jobject obj, const char* message);
 }
 #endif
 

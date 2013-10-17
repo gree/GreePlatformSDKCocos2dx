@@ -50,6 +50,8 @@ class CCWebView : public CCObject {
         // クリックした時、ブラウザを開くようにする
         void setBannerModeEnable(bool enable);
         void setCloseButton(const char* imagePath, int x, int y, int w, int h);
+        // 指定したURLスキーマが見つからなかった場合のメッセージ(Android用)
+        void setUrlSchemeNotFoundMessage(const char* message);
 
         // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);

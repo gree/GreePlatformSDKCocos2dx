@@ -263,6 +263,11 @@ void CCWebView::setBannerModeEnable(bool enable)
         
         [uiView addSubview:button];
     }
+    
+    void CCWebView::setUrlSchemeNotFoundMessage(const char *message)
+    {
+        // Do nothing
+    }
 
 }}
 
