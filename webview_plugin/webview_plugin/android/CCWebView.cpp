@@ -13,7 +13,7 @@ CCWebView::CCWebView(void* obj){
 	mWebView = obj;
 }
 
-CCWebView* CCWebView::create(){
+CCWebView* CCWebView::create(bool fullScreenMode){
 	jobject obj = createWebViewJni();
 	CCWebView* webview = NULL;
 	if(obj != NULL){
