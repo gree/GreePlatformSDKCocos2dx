@@ -128,5 +128,10 @@ void CCWebView::setCloseButton(const char* imageName, int x, int y, int w, int h
         setCloseButtonJni((jobject)mWebView, this, imagePath.c_str(), scale * x, 1 + scale * y + (frameSize.height - designSize.height * scale) / 2, scale * w, scale * h);
     }
 }
+    
+void CCWebView::setUrlSchemeNotFoundMessage(const char* message)
+{
+    setUrlSchemeNotFoundMessageJni((jobject)mWebView, message);
+}
 
 }} // End of namespae cocos2d::webview_plugin

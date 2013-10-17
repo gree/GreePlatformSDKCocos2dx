@@ -170,6 +170,15 @@ extern "C" {
 			t.env->DeleteLocalRef(t.classID);
 		}
 	}
+    
+    void setUrlSchemeNotFoundMessageJni(jobject obj, const char* message){
+		JniMethodInfo t;
+		if(getInstanceMethodInfo(t, obj, "setUrlSchemeNotFoundMessage", "(Ljava/lang/String;)V")){
+            jstring jMessage = t.env->NewStringUTF(message);
+			t.env->CallVoidMethod(obj, t.methodID, jMessage);
+			t.env->DeleteLocalRef(t.classID);
+		}
+	}
 
     // from Cocos2dxWebView
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_gree_webview_Cocos2dxWebView_nativeCalledFromJS(JNIEnv *env, jobject obj, jlong delegate, jstring message){
