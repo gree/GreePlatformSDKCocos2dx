@@ -52,6 +52,8 @@ class CCWebView : public CCObject {
         // クリックした時、ブラウザを開くようにする
         void setBannerModeEnable(bool enable);
         void setCloseButton(const char* imagePath, int x, int y, int w, int h);
+        // 指定したURLスキーマが見つからなかった場合のメッセージ(Android用)
+        void setUrlSchemeNotFoundMessage(const char* message);
 
         // バウンス時のエフェクトや、iPadで発生する不自然なボーダーを消す
         void disableEffect();
