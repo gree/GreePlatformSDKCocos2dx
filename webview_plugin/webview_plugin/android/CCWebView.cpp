@@ -26,6 +26,9 @@ CCWebView* CCWebView::create(bool fullScreenMode){
 	return webview;
 }
 
+void CCWebView::disableEffect(){
+}
+
 void CCWebView::loadUrl(const char* url, bool transparent/* =false */){
 	if(mWebView != NULL){
 		loadUrlJni((jobject)mWebView, url, transparent);
