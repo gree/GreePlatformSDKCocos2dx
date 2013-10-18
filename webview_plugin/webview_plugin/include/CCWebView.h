@@ -53,6 +53,9 @@ class CCWebView : public CCObject {
         void setBannerModeEnable(bool enable);
         void setCloseButton(const char* imagePath, int x, int y, int w, int h);
 
+        // バウンス時のエフェクトや、iPadで発生する不自然なボーダーを消す
+        void disableEffect();
+
         // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);
     

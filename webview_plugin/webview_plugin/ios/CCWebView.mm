@@ -117,13 +117,16 @@ CCWebView* CCWebView::create(bool fullScreenMode){
     [uiView setCCWebView:webview];
     
     uiView.delegate = (id<UIWebViewDelegate>)[[WebViewDelegate alloc] initWithDelegate:(void *)webview];
-    // Hide Border (for iPad)
-    for (UIView *view in [[[uiView subviews] objectAtIndex:0] subviews]) {
-        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
-    }
     webview->m_fullScreenMode = fullScreenMode;
     
     return webview;
+}
+
+void CCWebView::disableEffect(){
+    UIWebView *uiView = (UIWebView*)mWebView;
+    for (UIView *view in [[[uiView subviews] objectAtIndex:0] subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+    }
 }
     
 CGPoint convertDesignCoordToScreenCoord(const CCPoint& designCoord, bool fullScreenMode = false)
