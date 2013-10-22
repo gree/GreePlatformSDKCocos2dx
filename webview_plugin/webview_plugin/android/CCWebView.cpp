@@ -13,7 +13,7 @@ CCWebView::CCWebView(void* obj){
 	mWebView = obj;
 }
 
-CCWebView* CCWebView::create(){
+CCWebView* CCWebView::create(bool fullScreenMode){
 	jobject obj = createWebViewJni();
 	CCWebView* webview = NULL;
 	if(obj != NULL){
@@ -24,6 +24,9 @@ CCWebView* CCWebView::create(){
 		webview->retain();
 	}
 	return webview;
+}
+
+void CCWebView::disableEffect(){
 }
 
 void CCWebView::loadUrl(const char* url, bool transparent/* =false */){

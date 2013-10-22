@@ -15,6 +15,8 @@
     private: \
         static CC##module *s_p##module;
 
+#define CCWebView_FullScreenMode_enabled 1
+
 using namespace std;
 
 namespace cocos2d { namespace webview_plugin {
@@ -31,7 +33,7 @@ class CCWebViewDelegate {
 
 class CCWebView : public CCObject {
 	public:
-		static CCWebView* create();
+		static CCWebView* create(bool fullScreenMode = false);
 		void loadUrl(const char* url, bool transparent = false);
         void loadHtml(const char *filepath, bool transparent = false);
         void clearCache();
@@ -53,6 +55,9 @@ class CCWebView : public CCObject {
         // 指定したURLスキーマが見つからなかった場合のメッセージ(Android用)
         void setUrlSchemeNotFoundMessage(const char* message);
 
+        // バウンス時のエフェクトや、iPadで発生する不自然なボーダーを消す
+        void disableEffect();
+
         // この下で定義された変数などはPrivateになる
 		CREATE_DELEGATE(WebViewDelegate);
     
@@ -60,6 +65,11 @@ class CCWebView : public CCObject {
 		CCWebView(void* obj);
 		void* mWebView;
         void* mCloseButton;
+        // m_fullScreenModeは、フルスクリーンモードにするためのフラグ
+        // iPadの表示崩れに対応するために実装
+        // フルスクリーンモードの時に、setRectを呼ぶとデバイスの設定が無視されてフルスクリーンになる
+        // フルスクリーンモードの時に、setCloseButtonを呼ぶと、cocos座標の左上が、デバイス座標の左上に移動する
+        bool m_fullScreenMode;
 };
 
 }} // End of namespace cocos2d::webview_plugin

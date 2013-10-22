@@ -95,9 +95,10 @@ CCWebViewDelegate *CCWebView::s_pWebViewDelegate = NULL;
 CCWebView::CCWebView(void *obj){
     mWebView = obj;
     mCloseButton = NULL;
+    m_fullScreenMode = false;
 }
 
-CCWebView* CCWebView::create(){
+CCWebView* CCWebView::create(bool fullScreenMode){
     CCWebView *webview = NULL;
     UIView *view = [EAGLView sharedEGLView];
     UIWebViewWithCloseHandler *uiView = [[UIWebViewWithCloseHandler alloc] init];
@@ -116,20 +117,60 @@ CCWebView* CCWebView::create(){
     [uiView setCCWebView:webview];
     
     uiView.delegate = (id<UIWebViewDelegate>)[[WebViewDelegate alloc] initWithDelegate:(void *)webview];
+    webview->m_fullScreenMode = fullScreenMode;
+    
     return webview;
 }
 
-inline CGRect getRectForIOS(int x, int y, int w, int h) {
-    UIView *view = [EAGLView sharedEGLView];
-    CCSize designSize = CCEGLView::sharedOpenGLView()->getDesignResolutionSize();
-    CGFloat frameHeight = view.frame.size.height;
-    CGFloat offset = (frameHeight - designSize.height) / 2;
-    return CGRectMake(x, frameHeight - y - h - offset, w, h);
+void CCWebView::disableEffect(){
+    UIWebView *uiView = (UIWebView*)mWebView;
+    for (UIView *view in [[[uiView subviews] objectAtIndex:0] subviews]) {
+        if ([view isKindOfClass:[UIImageView class]]) view.hidden = YES;
+    }
+}
+    
+CGPoint convertDesignCoordToScreenCoord(const CCPoint& designCoord, bool fullScreenMode = false)
+{
+    CCEGLViewProtocol* eglView = CCEGLView::sharedOpenGLView();
+    float viewH = (float)[[EAGLView sharedEGLView] getHeight];
+    CCPoint visiblePos = CCPointMake(designCoord.x * eglView->getScaleX(), designCoord.y * eglView->getScaleY());
+    CCPoint screenGLPos = visiblePos;
+    if(!fullScreenMode){
+        screenGLPos = screenGLPos +  eglView->getViewPortRect().origin;
+    }
+    CGPoint screenPos = CGPointMake(screenGLPos.x, viewH - screenGLPos.y);
+    screenPos.x = screenPos.x /  [[EAGLView sharedEGLView] contentScaleFactor] ;
+    screenPos.y = screenPos.y /  [[EAGLView sharedEGLView] contentScaleFactor] ;
+    
+    return screenPos;
+}
+
+CGSize convertDesignSizeToScreenSize(const CCSize& size)
+{
+    CCEGLViewProtocol* eglView = CCEGLView::sharedOpenGLView();
+    CGSize controlSize = CGSizeMake(size.width * eglView->getScaleX(),size.height * eglView->getScaleY());
+    controlSize.width /=  [[EAGLView sharedEGLView] contentScaleFactor] ;
+    controlSize.height /=  [[EAGLView sharedEGLView] contentScaleFactor] ;
+    return controlSize;
+}
+
+inline CGRect getRectForIOS(int x, int y, int w, int h, bool fullScreenMode = false) {
+    CGPoint point = convertDesignCoordToScreenCoord(CCPointMake(x,y + h), fullScreenMode);
+    CGSize size = convertDesignSizeToScreenSize(CCSizeMake(w,h));
+    CCLOG("getRectForIOS %f %f %f %f", point.x, point.y, size.width, size.height);
+    return CGRectMake(point.x, point.y, size.width, size.height);
 }
     
 void CCWebView::setRect(int x, int y, int w, int h){
     UIWebView *uiView = (UIWebView*)mWebView;
-    uiView.frame = getRectForIOS(x, y, w, h);
+    if(m_fullScreenMode){
+        uiView.frame = CGRectMake(0,
+                                  0,
+                                  [[EAGLView sharedEGLView] getWidth] / [[EAGLView sharedEGLView] contentScaleFactor],
+                                  [[EAGLView sharedEGLView] getHeight] / [[EAGLView sharedEGLView] contentScaleFactor]);
+    }else{
+        uiView.frame = getRectForIOS(x, y, w, h);
+    }
 }
 
 void CCWebView::loadUrl(const char *url, bool transparent/* =false */){
@@ -251,7 +292,7 @@ void CCWebView::setBannerModeEnable(bool enable)
         [image release];
         [button addTarget:webView action:@selector(closeWebView) forControlEvents:UIControlEventTouchUpInside];
         
-        button.frame = getRectForIOS(x, y, w, h);
+        button.frame = getRectForIOS(x, y, w, h, m_fullScreenMode);
         if (mCloseButton) {
             UIView* view = (UIView*)mCloseButton;
             [view removeFromSuperview];
